@@ -6,7 +6,7 @@ import java.util.List;
 import org.ta4j.core.Indicator;
 import org.ta4j.core.num.Num;
 
-public interface IndicatorPlotter<N extends Num> extends Plotter{
+public interface IndicatorConverter<N extends Num> extends Converter {
 	
 	void addIndicator(String name, Indicator<N> indicator);
 	

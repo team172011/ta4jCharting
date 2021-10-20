@@ -11,7 +11,7 @@ import org.ta4j.core.BarSeries;
 import org.ta4j.core.Indicator;
 import org.ta4j.core.num.Num;
 
-public class IndicatorPlotterImpl implements IndicatorPlotter<Num> {
+public class IndicatorConverterImpl implements IndicatorConverter<Num> {
 
 	Map<String, Indicator<Num>> indicators = new LinkedHashMap<>();
 	Map<String, List<Number>> values = new LinkedHashMap<>();
@@ -19,7 +19,7 @@ public class IndicatorPlotterImpl implements IndicatorPlotter<Num> {
 	
 	@Override
 	public void addIndicator(final String indicatorName, Indicator<Num> indicator) {
-		Objects.requireNonNull(indicatorName, "indicatorName cannot be null!");
+		Objects.requireNonNull(indicatorName, "Indicator must have a name!");
 		Objects.requireNonNull(indicator, "Indicator cannot be null!");
 		
 		final BarSeries barSeries = indicator.getBarSeries();
