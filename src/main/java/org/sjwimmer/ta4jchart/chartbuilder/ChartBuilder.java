@@ -5,18 +5,13 @@ import javax.swing.JPanel;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.Indicator;
 import org.ta4j.core.Strategy;
+import org.ta4j.core.TradingRecord;
 import org.ta4j.core.num.Num;
 
 public interface ChartBuilder {
 
 	JPanel createPlot();
-
-	void addBarSeries(BarSeries barSeries);
-
-	void addIndicator(String name, Indicator<Num> indicator);
-
-	void addStrategy(Strategy strategy);
-
-	
+	void addIndicator(Indicator<Num> indicator);
+	void setTradingRecord(TradingRecord tradingRecord);
 
 }

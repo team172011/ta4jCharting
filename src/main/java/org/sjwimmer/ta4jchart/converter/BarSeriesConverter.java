@@ -1,14 +1,12 @@
-package org.sjwimmer.ta4jchart.plotter;
+package org.sjwimmer.ta4jchart.converter;
+
+import org.jfree.data.xy.OHLCDataset;
+import org.jfree.data.xy.XYDataset;
+import org.ta4j.core.BarSeries;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
-public interface BarSeriesConverter extends Converter {
-	String getBarSeriesName();
-	List<Date> getDates();
-	List<Number> getOpenData();
-	List<Number> getLowData();
-	List<Number> getHighData();
-	List<Number> getCloseData();
-	List<Number> getVolumeData();
+public interface BarSeriesConverter extends Converter<BarSeries, OHLCDataset> {
 }

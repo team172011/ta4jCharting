@@ -1,77 +1,54 @@
-package org.sjwimmer.ta4jchart.plotter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+package org.sjwimmer.ta4jchart.converter;
+import java.util.*;
 
+import org.jfree.data.time.ohlc.OHLCSeriesCollection;
+import org.jfree.data.xy.*;
 import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
 
 public class BarSeriesConverterImpl implements BarSeriesConverter {
 
-	private final String barSeriesName;
-	
-	List<Number> openData = new ArrayList<>();
-	List<Number> highData = new ArrayList<>();
-	List<Number> lowData = new ArrayList<>();
-	List<Number> closeData = new ArrayList<>();
-	List<Number>volumeData = new ArrayList<>();
-	List<Date> dates = new ArrayList<>();
+	private OHLCDataItem createItem(Bar bar) {
+		return new OHLCDataItem(Date.from(bar.getEndTime().toInstant()),
+				bar.getOpenPrice().doubleValue(),
+				bar.getHighPrice().doubleValue(),
+				bar.getLowPrice().doubleValue(),
+				bar.getClosePrice().doubleValue(), bar.getVolume().doubleValue());
+	}
 
-	public BarSeriesConverterImpl(BarSeries barSeries){
-		Objects.requireNonNull(barSeries, "Bar series can not be null!");
-		this.barSeriesName = barSeries.getName();
+	@Override
+	public OHLCDataset apply(BarSeries barSeries) {
+/*
+		final OHLCDataItem[] items =  new OHLCDataItem[barSeries.getBarCount()];
 		for(int i = barSeries.getBeginIndex(); i <= barSeries.getEndIndex(); i++) {
-			addData(barSeries.getBar(i));
+			items[i - barSeries.getRemovedBarsCount()] = createItem(barSeries.getBar(i));
 		}
-	}
+		return new DefaultHighLowDataset(barSeries.getName(), items);
+*/
+		final int nbBars = barSeries.getBarCount();
 
-	private void addData(Bar bar) {
-		openData.add(bar.getOpenPrice().getDelegate());
-		highData.add(bar.getHighPrice().getDelegate());
-		lowData.add(bar.getLowPrice().getDelegate());
-		closeData.add(bar.getClosePrice().getDelegate());
-		dates.add(Date.from(bar.getEndTime().toInstant()));
-		volumeData.add(bar.getVolume().getDelegate());
-	}
+		Date[] dates = new Date[nbBars];
+		double[] opens = new double[nbBars];
+		double[] highs = new double[nbBars];
+		double[] lows = new double[nbBars];
+		double[] closes = new double[nbBars];
+		double[] volumes = new double[nbBars];
 
+		for (int i = 0; i < nbBars; i++) {
+			Bar Bar = barSeries.getBar(i);
+			dates[i] = new Date(Bar.getEndTime().toEpochSecond() * 1000);
+			opens[i] = Bar.getOpenPrice().doubleValue();
+			highs[i] = Bar.getHighPrice().doubleValue();
+			lows[i] = Bar.getLowPrice().doubleValue();
+			closes[i] = Bar.getClosePrice().doubleValue();
+			volumes[i] = Bar.getVolume().doubleValue();
+		}
 
-	@Override
-	public List<Number> getOpenData() {
-		return openData;
-	}
-
-
-	@Override
-	public List<Number> getLowData() {
-		return lowData;
-	}
-
-
-	@Override
-	public List<Number> getHighData() {
-		return highData;
-	}
-
-
-	@Override
-	public List<Number> getCloseData() {
-		return closeData;
+		return new DefaultHighLowDataset(barSeries.getName(), dates, highs, lows, opens, closes, volumes);
 	}
 
 	@Override
-	public List<Number> getVolumeData() {
-		return this.volumeData;
-	}
-
-
-	@Override
-	public String getBarSeriesName() {
-		return this.barSeriesName;
-	}
-
-	@Override
-	public List<Date> getDates() {
-		return this.dates;
+	public String getName(BarSeries element) {
+		return element.getName();
 	}
 }

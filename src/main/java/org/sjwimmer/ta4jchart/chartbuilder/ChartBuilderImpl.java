@@ -1,97 +1,137 @@
 package org.sjwimmer.ta4jchart.chartbuilder;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
+import javax.swing.*;
 
-import org.knowm.xchart.OHLCChart;
-import org.knowm.xchart.OHLCChartBuilder;
-import org.knowm.xchart.XChartPanel;
-import org.knowm.xchart.style.Styler.LegendPosition;
+import org.jfree.chart.*;
+import org.jfree.chart.axis.DateAxis;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.plot.IntervalMarker;
+import org.jfree.chart.plot.Marker;
+import org.jfree.chart.plot.ValueMarker;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.CandlestickRenderer;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.chart.ui.RectangleAnchor;
+import org.jfree.data.time.Minute;
+import org.jfree.data.time.TimeSeriesCollection;
+import org.jfree.data.xy.OHLCDataset;
 import org.sjwimmer.ta4jchart.data.DataTableModel;
-import org.sjwimmer.ta4jchart.plotter.BarSeriesPlotter;
-import org.sjwimmer.ta4jchart.plotter.BarSeriesPlotterImpl;
-import org.sjwimmer.ta4jchart.plotter.IndicatorPlotter;
-import org.sjwimmer.ta4jchart.plotter.IndicatorPlotterImpl;
-import org.sjwimmer.ta4jchart.plotter.StrategyPlotter;
-import org.ta4j.core.BarSeries;
-import org.ta4j.core.Indicator;
-import org.ta4j.core.Strategy;
+import org.sjwimmer.ta4jchart.converter.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.ta4j.core.*;
 import org.ta4j.core.num.Num;
 
 public class ChartBuilderImpl implements ChartBuilder {
-	
-	private final BarSeriesPlotter barseriesPlotter;
-	private final IndicatorPlotter<Num> indicatorPlotter;
-	private final StrategyPlotter strategyPlotter;
-	
+
+	private final static Logger log = LoggerFactory.getLogger(ChartBuilderImpl.class);
+	private final BarSeries barSeries;
+	private final BarSeriesConverter barSeriesConverter;
+	private final IndicatorConverter indicatorConverter;
+	private final JFreeChart chart;
+	private final DataTableModel dataTableModel = new DataTableModel();
+	private final ChartBuilderConfig chartBuilderConfig;
+
+	private int overlayCounter = 1; // 0 = ohlcv data
 		
-	public ChartBuilderImpl() {
-		this.barseriesPlotter = new BarSeriesPlotterImpl();
-		this.indicatorPlotter = new IndicatorPlotterImpl();
-		this.strategyPlotter = null;
+	public ChartBuilderImpl(BarSeries barSeries) {
+		this(barSeries, new BarSeriesConverterImpl(), new IndicatorConverterImpl(), new BaseChartBuilderConfig());
 	}
 	
-	public ChartBuilderImpl(BarSeriesPlotter barseriesPlotter, IndicatorPlotter<Num> indicatorPlotter, StrategyPlotter strategyPlotter) {
-		this.barseriesPlotter = barseriesPlotter;
-		this.indicatorPlotter = indicatorPlotter;
-		this.strategyPlotter = strategyPlotter;
+	public ChartBuilderImpl(BarSeries barSeries, BarSeriesConverter barseriesPlotter, IndicatorConverter indicatorConverter, ChartBuilderConfig chartBuilderConfig) {
+		this.barSeriesConverter = barseriesPlotter;
+		this.indicatorConverter = indicatorConverter;
+		this.chartBuilderConfig = chartBuilderConfig;
+		this.barSeries = barSeries;
+		chart = createCandlestickChart(this.barSeries, dataTableModel);
 	}
 
 	@Override
 	public JPanel createPlot() {
-		JPanel mainPanel = new JPanel(new BorderLayout());
-		DataTableModel dataTableModel = new DataTableModel();
-		OHLCChart chart = new OHLCChartBuilder().width(600).height(400).title("MyTitle").xAxisTitle("Time").yAxisTitle("Value").build();
-		
-		chart.getStyler().setLegendPosition(LegendPosition.InsideNE);
-		
-
-		for(String seriesName: this.barseriesPlotter.getBarSeriesNames()) {
-			chart.addSeries(seriesName, 
-					this.barseriesPlotter.getDates(seriesName),
-					this.barseriesPlotter.getOpenData(seriesName), 
-					this.barseriesPlotter.getHighData(seriesName),
-					this.barseriesPlotter.getLowData(seriesName), 
-					this.barseriesPlotter.getCloseData(seriesName))
-			.setUpColor(Color.RED)
-			.setDownColor(Color.GREEN);
-			dataTableModel.addEntry(seriesName, this.barseriesPlotter.getCloseData(seriesName));
-		}
-		
-		for(String indicatorName: this.indicatorPlotter.getIndicatorNames()) {
-			chart.addSeries(indicatorName, 
-					null, 
-					this.indicatorPlotter.getValues(indicatorName));
-			dataTableModel.addEntry(indicatorName, this.indicatorPlotter.getValues(indicatorName));
-		}
-		
-		JTable dataTable = new JTable(dataTableModel);
-		JPanel chartPanel = new XChartPanel<OHLCChart>(chart);
+		final JPanel mainPanel = new JPanel(new BorderLayout());
+		final JTable dataTable = new JTable(dataTableModel);
+		final ChartPanel chartPanel = new ChartPanel(chart);
 		mainPanel.add(chartPanel, BorderLayout.CENTER);
-		mainPanel.add(new JScrollPane(dataTable), BorderLayout.EAST);
+
+		if (chartBuilderConfig.isPlotDataTable()) {
+			mainPanel.add(new JScrollPane(dataTable), BorderLayout.EAST);
+		}
+
 		return mainPanel;
 	}
 
-	@Override
-	public void addBarSeries(BarSeries barSeries) {
-		this.barseriesPlotter.addBarSeries(barSeries);
-		
+	private JFreeChart createCandlestickChart(final BarSeries series, final DataTableModel dataTableModel) {
+		final String seriesName = this.barSeriesConverter.getName(series);
+		final ValueAxis timeAxis = new DateAxis("Time");
+		final NumberAxis valueAxis = new NumberAxis("Price");
+		final CandlestickRenderer renderer = new CandlestickRenderer();
+		final OHLCDataset barSeriesData = this.barSeriesConverter.apply(series);
+		final XYPlot plot = new XYPlot(barSeriesData, timeAxis, valueAxis, renderer);
+		JFreeChart chart = new JFreeChart(seriesName, JFreeChart.DEFAULT_TITLE_FONT,
+				plot, true);
+		new StandardChartTheme("JFree").apply(chart);
+
+		dataTableModel.addEntries(barSeriesData);
+
+		return chart;
 	}
 
 	@Override
-	public void addStrategy(Strategy strategy) {
-		// TODO Auto-generated method stub
-		
+	public void addIndicator(Indicator<Num> indicator) {
+		final int counter = overlayCounter++;
+		final TimeSeriesCollection timeSeriesCollection = this.indicatorConverter.apply(indicator);
+		((XYPlot) this.chart.getPlot()).setRenderer(counter, new XYLineAndShapeRenderer());
+		((XYPlot) this.chart.getPlot()).setDataset(counter, timeSeriesCollection);
+		this.dataTableModel.addEntries(timeSeriesCollection);
 	}
 
 	@Override
-	public void addIndicator(String name, Indicator<Num> indicator) {
-		this.indicatorPlotter.addIndicator(name, indicator);
+	public void setTradingRecord(TradingRecord tradingRecord) {
+		if(tradingRecord.getLastExit() != null){
+			final XYPlot mainPlot = chart.getXYPlot();
+			final java.util.List<Trade> trades = tradingRecord.getTrades();
+			final Order.OrderType orderType = tradingRecord.getLastExit().getType().complementType();
+			final List<Marker> markers = new ArrayList<>();
+			final RectangleAnchor entryAnchor = RectangleAnchor.TOP_LEFT;
+			final RectangleAnchor exitAnchor = RectangleAnchor.BOTTOM_RIGHT;
+
+			final Color entryColor = orderType==Order.OrderType.SELL ? Color.RED : Color.GREEN;
+			final Color exitColor = orderType==Order.OrderType.SELL ? Color.GREEN: Color.RED;
+			for(Trade trade: trades){
+				double entry = new Minute(Date.from(
+						this.barSeries.getBar(trade.getEntry().getIndex()).getEndTime().toInstant())).getFirstMillisecond();
+				double exit = new Minute(Date.from(
+						this.barSeries.getBar(trade.getExit().getIndex()).getEndTime().toInstant())).getFirstMillisecond();
+
+				ValueMarker in = new ValueMarker(entry);
+				in.setLabel(orderType.toString());
+				in.setLabelPaint(Color.WHITE);
+				in.setLabelAnchor(entryAnchor);
+				in.setPaint(entryColor);
+				mainPlot.addDomainMarker(in);
+
+				ValueMarker out = new ValueMarker(exit);
+				out.setLabel(orderType.complementType().toString());
+				out.setLabelPaint(Color.WHITE);
+				out.setLabelAnchor(exitAnchor);
+				out.setPaint(exitColor);
+				mainPlot.addDomainMarker(out);
+
+				IntervalMarker imarker = new IntervalMarker(entry, exit, entryColor);
+				imarker.setAlpha(0.1f);
+				mainPlot.addDomainMarker(imarker);
+				markers.add(imarker);
+				markers.add(in);
+				markers.add(out);
+			}
+		} else{
+			log.error("No closed trade in trading record!");
+		}
 	}
-
-
 }

@@ -16,43 +16,51 @@ import javax.swing.JFrame;
 
 import org.sjwimmer.ta4jchart.chartbuilder.ChartBuilder;
 import org.sjwimmer.ta4jchart.chartbuilder.ChartBuilderImpl;
-import org.ta4j.core.BarSeries;
-import org.ta4j.core.BaseBarSeries;
+import org.ta4j.core.*;
+import org.ta4j.core.indicators.EMAIndicator;
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 import org.ta4j.core.indicators.helpers.HighPriceIndicator;
-import org.ta4j.core.num.Num;
+import org.ta4j.core.trading.rules.CrossedDownIndicatorRule;
+import org.ta4j.core.trading.rules.CrossedUpIndicatorRule;
 
 
 public class Starter {
 
 	public static void main(String[] args) {
 		
-		// 1 Create some barSeries and indicators
+		// 1 Create a barSeries, indicators and run your strategy
 		BarSeries barSeries = loadAppleIncSeries();
 		HighPriceIndicator highPrice = new HighPriceIndicator(barSeries);
 		ClosePriceIndicator closePrice = new ClosePriceIndicator(barSeries);
-		
-		// 2 Add them to a ChartBuilder instance
-		ChartBuilder chartBuilder = new ChartBuilderImpl();
-		chartBuilder.addBarSeries(barSeries);
-		chartBuilder.addIndicator("High Price Indicator", highPrice);
-		chartBuilder.addIndicator("Close Price Indicator", closePrice);
-		
-		javax.swing.SwingUtilities.invokeLater(() -> {
+		EMAIndicator longEma = new EMAIndicator(closePrice, 20);
+		EMAIndicator shortEma = new EMAIndicator(closePrice, 6);
+		CrossedDownIndicatorRule exit = new CrossedDownIndicatorRule(shortEma, longEma);
+		CrossedUpIndicatorRule entry = new CrossedUpIndicatorRule(shortEma, longEma);
 
+		Strategy strategy = new BaseStrategy(entry, exit);
+		TradingRecord tradingRecord = new BarSeriesManager(barSeries).run(strategy);
+
+		// 2 Add your ta4j objects to a ChartBuilder instance
+		ChartBuilder chartBuilder = new ChartBuilderImpl(barSeries);
+		chartBuilder.addIndicator(highPrice);
+		chartBuilder.addIndicator(longEma);
+		chartBuilder.addIndicator(shortEma);
+		chartBuilder.setTradingRecord(tradingRecord);
+
+		// 3 Create JFrame
+		javax.swing.SwingUtilities.invokeLater(() -> {
 		    JFrame frame = new JFrame("Ta4j charting");
 		    frame.setLayout(new BorderLayout());
 		    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		    
-		    // 3 add the plot to a JFrame
+		    // 4 add the plot to a JFrame
 		    frame.add(chartBuilder.createPlot());
 		    frame.pack();
 		    frame.setVisible(true);
-		  
 		});
 
 	}
-	
+
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     
     /**
@@ -85,7 +93,6 @@ public class Starter {
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
