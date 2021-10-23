@@ -1,7 +1,7 @@
-name: learn-github-actions
+name: Test Workflow
 on: [push]
 jobs:
-  check-bats-version:
+  Test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
