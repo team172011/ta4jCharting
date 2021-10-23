@@ -2,6 +2,7 @@ package org.sjwimmer.ta4jchart.chartbuilder;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -93,6 +94,11 @@ public class ChartBuilderImpl implements ChartBuilder {
 
 	@Override
 	public void setTradingRecord(TradingRecord tradingRecord) {
+		List<String> tradeData = new ArrayList<>();
+		for(int i = this.barSeries.getBeginIndex(); i < this.barSeries.getBarCount(); i++){
+			tradeData.add("-");
+		}
+
 		if(tradingRecord.getLastExit() != null){
 			final XYPlot mainPlot = chart.getXYPlot();
 			final java.util.List<Trade> trades = tradingRecord.getTrades();
@@ -104,11 +110,14 @@ public class ChartBuilderImpl implements ChartBuilder {
 			final Color entryColor = orderType==Order.OrderType.SELL ? Color.RED : Color.GREEN;
 			final Color exitColor = orderType==Order.OrderType.SELL ? Color.GREEN: Color.RED;
 			for(Trade trade: trades){
+				int entryIndex = trade.getEntry().getIndex();
+				int exitIndex = trade.getExit().getIndex();
 				double entry = new Minute(Date.from(
-						this.barSeries.getBar(trade.getEntry().getIndex()).getEndTime().toInstant())).getFirstMillisecond();
+						this.barSeries.getBar(entryIndex).getEndTime().toInstant())).getFirstMillisecond();
 				double exit = new Minute(Date.from(
-						this.barSeries.getBar(trade.getExit().getIndex()).getEndTime().toInstant())).getFirstMillisecond();
-
+						this.barSeries.getBar(exitIndex).getEndTime().toInstant())).getFirstMillisecond();
+				tradeData.set(entryIndex, "Enter");
+				tradeData.set(exitIndex, "Exit");
 				ValueMarker in = new ValueMarker(entry);
 				in.setLabel(orderType.toString());
 				in.setLabelPaint(Color.WHITE);
@@ -130,6 +139,7 @@ public class ChartBuilderImpl implements ChartBuilder {
 				markers.add(in);
 				markers.add(out);
 			}
+			this.dataTableModel.addEntries("Trades", tradeData);
 		} else{
 			log.error("No closed trade in trading record!");
 		}
