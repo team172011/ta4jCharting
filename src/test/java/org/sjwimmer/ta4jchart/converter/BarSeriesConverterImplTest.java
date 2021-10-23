@@ -15,7 +15,6 @@ public class BarSeriesConverterImplTest {
         final BaseBarSeries barSeries = new BaseBarSeries("test");
         OHLCDataset test = barSeriesConverter.apply(barSeries);
         String name = barSeriesConverter.getName(barSeries);
-
         assertEquals(barSeries.getName(),name);
     }
 }
