@@ -101,15 +101,15 @@ public class ChartBuilderImpl implements ChartBuilder {
 
 		if(tradingRecord.getLastExit() != null){
 			final XYPlot mainPlot = chart.getXYPlot();
-			final java.util.List<Trade> trades = tradingRecord.getTrades();
-			final Order.OrderType orderType = tradingRecord.getLastExit().getType().complementType();
+			final java.util.List<Position> trades = tradingRecord.getPositions();
+			final Trade.TradeType orderType = tradingRecord.getLastExit().getType().complementType();
 			final List<Marker> markers = new ArrayList<>();
 			final RectangleAnchor entryAnchor = RectangleAnchor.TOP_LEFT;
 			final RectangleAnchor exitAnchor = RectangleAnchor.BOTTOM_RIGHT;
 
-			final Color entryColor = orderType==Order.OrderType.SELL ? Color.RED : Color.GREEN;
-			final Color exitColor = orderType==Order.OrderType.SELL ? Color.GREEN: Color.RED;
-			for(Trade trade: trades){
+			final Color entryColor = orderType == Trade.TradeType.SELL ? Color.RED : Color.GREEN;
+			final Color exitColor = orderType == Trade.TradeType.SELL ? Color.GREEN: Color.RED;
+			for(Position trade: trades){
 				int entryIndex = trade.getEntry().getIndex();
 				int exitIndex = trade.getExit().getIndex();
 				double entry = new Minute(Date.from(

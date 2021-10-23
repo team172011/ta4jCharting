@@ -1,3 +1,4 @@
+[![Test develop](https://github.com/team172011/ta4jCharting/actions/workflows/test-action-master.yml/badge.svg?branch=master&event=push)](https://github.com/team172011/ta4jCharting/actions/workflows/test-action-master.yml) [![Test develop](https://github.com/team172011/ta4jCharting/actions/workflows/test-action-develop.yml/badge.svg?branch=develop&event=push)](https://github.com/team172011/ta4jCharting/actions/workflows/test-action-develop.yml)
 # Ta4jCharting
 A simple charting application for [ta4j](https://github.com/ta4j/ta4j).
 
