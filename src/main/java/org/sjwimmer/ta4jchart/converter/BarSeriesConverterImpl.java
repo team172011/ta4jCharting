@@ -8,23 +8,8 @@ import org.ta4j.core.BarSeries;
 
 public class BarSeriesConverterImpl implements BarSeriesConverter {
 
-	private OHLCDataItem createItem(Bar bar) {
-		return new OHLCDataItem(Date.from(bar.getEndTime().toInstant()),
-				bar.getOpenPrice().doubleValue(),
-				bar.getHighPrice().doubleValue(),
-				bar.getLowPrice().doubleValue(),
-				bar.getClosePrice().doubleValue(), bar.getVolume().doubleValue());
-	}
-
 	@Override
 	public OHLCDataset apply(BarSeries barSeries) {
-/*
-		final OHLCDataItem[] items =  new OHLCDataItem[barSeries.getBarCount()];
-		for(int i = barSeries.getBeginIndex(); i <= barSeries.getEndIndex(); i++) {
-			items[i - barSeries.getRemovedBarsCount()] = createItem(barSeries.getBar(i));
-		}
-		return new DefaultHighLowDataset(barSeries.getName(), items);
-*/
 		final int nbBars = barSeries.getBarCount();
 
 		Date[] dates = new Date[nbBars];
