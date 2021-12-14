@@ -13,7 +13,7 @@ public class IndicatorConverterImplTest {
     @Test
     public void testCreateConverter(){
         var prices = new double[]{20, 21, 23, 24, 25, 26};
-        var indicatorConver = new IndicatorConverterImpl();
+        var indicatorConver = new IndicatorToTimeSeriesConverterImpl();
         var barSeries = new BaseBarSeriesBuilder().withName("test").withBars(BarSeriesHelper.createBars(prices)).build();
         var closePrice = new ClosePriceIndicator(barSeries);
 
