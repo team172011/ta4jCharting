@@ -1,53 +1,58 @@
 package org.sjwimmer.ta4jchart.chartbuilder;
 
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
-import javax.swing.*;
-
-import org.jfree.chart.*;
+import org.jfree.chart.ChartMouseListener;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
-import org.jfree.chart.plot.IntervalMarker;
-import org.jfree.chart.plot.Marker;
-import org.jfree.chart.plot.ValueMarker;
-import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.CandlestickRenderer;
+import org.jfree.chart.plot.*;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.ui.RectangleAnchor;
 import org.jfree.data.time.Minute;
 import org.jfree.data.time.TimeSeriesCollection;
-import org.jfree.data.xy.OHLCDataset;
-import org.sjwimmer.ta4jchart.data.DataTableModel;
+import org.jfree.data.xy.DefaultHighLowDataset;
+import org.sjwimmer.ta4jchart.chart.TacChartMouseListener;
+import org.sjwimmer.ta4jchart.chart.dataset.TacBarDataset;
 import org.sjwimmer.ta4jchart.converter.*;
+import org.sjwimmer.ta4jchart.data.DataTableModel;
+import org.sjwimmer.ta4jchart.chart.renderer.TacBarRenderer;
+import org.sjwimmer.ta4jchart.chart.renderer.TacCandlestickRenderer;
+import org.sjwimmer.ta4jchart.chart.renderer.TacChartTheme;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.ta4j.core.*;
 import org.ta4j.core.num.Num;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 public class ChartBuilderImpl implements ChartBuilder {
 
 	private final static Logger log = LoggerFactory.getLogger(ChartBuilderImpl.class);
+	private final TacChartTheme theme = new TacChartTheme();
 	private final BarSeries barSeries;
 	private final BarSeriesConverter barSeriesConverter;
-	private final IndicatorConverter indicatorConverter;
+	private final IndicatorToTimeSeriesConverter indicatorConverter;
+	private final IndicatorToBarDataConverter indicatorToBarDataConverter;
 	private final JFreeChart chart;
 	private final DataTableModel dataTableModel = new DataTableModel();
 	private final ChartBuilderConfig chartBuilderConfig;
 
-	private int overlayCounter = 1; // 0 = ohlcv data
+	private int overlayIds = 2; // 0 = ohlcv data, 1 = volume data
 		
 	public ChartBuilderImpl(BarSeries barSeries) {
-		this(barSeries, new BarSeriesConverterImpl(), new IndicatorConverterImpl(), new BaseChartBuilderConfig());
+		this(barSeries, new BarSeriesConverterImpl(), new IndicatorToTimeSeriesConverterImpl(), new IndicatorToBarDataConverterImpl(), new BaseChartBuilderConfig());
 	}
 	
-	public ChartBuilderImpl(BarSeries barSeries, BarSeriesConverter barseriesPlotter, IndicatorConverter indicatorConverter, ChartBuilderConfig chartBuilderConfig) {
+	public ChartBuilderImpl(BarSeries barSeries, BarSeriesConverter barseriesPlotter, IndicatorToTimeSeriesConverter indicatorConverter, IndicatorToBarDataConverter indicatorToBarDataConverter, ChartBuilderConfig chartBuilderConfig) {
 		this.barSeriesConverter = barseriesPlotter;
 		this.indicatorConverter = indicatorConverter;
+		this.indicatorToBarDataConverter = indicatorToBarDataConverter;
 		this.chartBuilderConfig = chartBuilderConfig;
 		this.barSeries = barSeries;
 		chart = createCandlestickChart(this.barSeries, dataTableModel);
@@ -58,8 +63,9 @@ public class ChartBuilderImpl implements ChartBuilder {
 		final JPanel mainPanel = new JPanel(new BorderLayout());
 		final JTable dataTable = new JTable(dataTableModel);
 		final ChartPanel chartPanel = new ChartPanel(chart);
-		mainPanel.add(chartPanel, BorderLayout.CENTER);
 
+		mainPanel.add(chartPanel, BorderLayout.CENTER);
+		chartPanel.addChartMouseListener(new TacChartMouseListener(chartPanel));
 		if (chartBuilderConfig.isPlotDataTable()) {
 			mainPanel.add(new JScrollPane(dataTable), BorderLayout.EAST);
 		}
@@ -70,26 +76,80 @@ public class ChartBuilderImpl implements ChartBuilder {
 	private JFreeChart createCandlestickChart(final BarSeries series, final DataTableModel dataTableModel) {
 		final String seriesName = this.barSeriesConverter.getName(series);
 		final ValueAxis timeAxis = new DateAxis("Time");
-		final NumberAxis valueAxis = new NumberAxis("Price");
-		final CandlestickRenderer renderer = new CandlestickRenderer();
-		final OHLCDataset barSeriesData = this.barSeriesConverter.apply(series);
-		final XYPlot plot = new XYPlot(barSeriesData, timeAxis, valueAxis, renderer);
-		JFreeChart chart = new JFreeChart(seriesName, JFreeChart.DEFAULT_TITLE_FONT,
-				plot, true);
-		new StandardChartTheme("JFree").apply(chart);
+		final NumberAxis valueAxis = new NumberAxis("Price/Value");
+		final TacCandlestickRenderer candlestickRenderer = new TacCandlestickRenderer();
+		final DefaultHighLowDataset barSeriesData = this.barSeriesConverter.apply(series);
+		final XYPlot plot = new XYPlot(barSeriesData, null, valueAxis, candlestickRenderer);
 
+		final CombinedDomainXYPlot combinedDomainPlot = new CombinedDomainXYPlot(timeAxis);
+
+		combinedDomainPlot.add(plot,10);
+		valueAxis.setAutoRangeIncludesZero(false);
+		candlestickRenderer.setAutoWidthMethod(1);
+		candlestickRenderer.setDrawVolume(false);
+
+		final JFreeChart chart = new JFreeChart(seriesName, JFreeChart.DEFAULT_TITLE_FONT,
+				combinedDomainPlot, true);
+
+		theme.apply(chart);
 		dataTableModel.addEntries(barSeriesData);
-
 		return chart;
 	}
 
 	@Override
 	public void addIndicator(Indicator<Num> indicator) {
-		final int counter = overlayCounter++;
-		final TimeSeriesCollection timeSeriesCollection = this.indicatorConverter.apply(indicator);
-		((XYPlot) this.chart.getPlot()).setRenderer(counter, new XYLineAndShapeRenderer());
-		((XYPlot) this.chart.getPlot()).setDataset(counter, timeSeriesCollection);
-		this.dataTableModel.addEntries(timeSeriesCollection);
+		this.addIndicator(indicator, PlotType.OVERLAY, ChartType.LINE);
+	}
+
+	@Override
+	public void addIndicator(Indicator<Num> indicator, PlotType plotType, ChartType chartType) {
+		if(plotType == PlotType.OVERLAY) {
+			if(chartType == ChartType.LINE) {
+				final int counter = overlayIds++;
+				final TimeSeriesCollection timeSeriesCollection = this.indicatorConverter.apply(indicator);
+				final XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+				final CombinedDomainXYPlot combinedDomainPlot = (CombinedDomainXYPlot) this.chart.getPlot();
+				final XYPlot candlestickPlot = (XYPlot) combinedDomainPlot.getSubplots().get(0);
+
+				renderer.setSeriesShape(0, new Rectangle2D.Double(-3.0, -3.0, 3.0, 3.0));
+				candlestickPlot.setRenderer(counter, renderer);
+				candlestickPlot.setDataset(counter, timeSeriesCollection);
+				this.dataTableModel.addEntries(timeSeriesCollection);
+			} else if(chartType == ChartType.BAR) {
+				final int counter = overlayIds++;
+				final TacBarDataset barDataset = indicatorToBarDataConverter.apply(indicator);
+				final TacBarRenderer barRenderer = new TacBarRenderer(Color.blue);
+				final CombinedDomainXYPlot combinedDomainPlot = (CombinedDomainXYPlot) this.chart.getPlot();
+				final XYPlot candlestickPlot = (XYPlot) combinedDomainPlot.getSubplots().get(0);
+
+				candlestickPlot.setRenderer(counter, barRenderer);
+				candlestickPlot.setDataset(counter, barDataset);
+			}
+		} else if (plotType == PlotType.SUBPLOT) {
+			if(chartType == ChartType.BAR) {
+				final TacBarDataset barDataset = indicatorToBarDataConverter.apply(indicator);
+				final NumberAxis valueAxis = new NumberAxis(indicatorToBarDataConverter.getName(indicator));
+				final TacBarRenderer barRenderer = new TacBarRenderer(Color.blue);
+				final XYPlot barPlot = new XYPlot(barDataset, null, valueAxis, barRenderer);
+				final CombinedDomainXYPlot combinedDomainPlot = (CombinedDomainXYPlot) this.chart.getPlot();
+				valueAxis.setLabel("");
+				combinedDomainPlot.add(barPlot, 1);
+			} else if (chartType == ChartType.LINE) {
+				final TimeSeriesCollection timeSeriesCollection = this.indicatorConverter.apply(indicator);
+				final XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+				final NumberAxis valueAxis = new NumberAxis(indicatorToBarDataConverter.getName(indicator).replaceAll("\\s+", "\n"));
+				final XYPlot linePlot = new XYPlot(timeSeriesCollection, null, valueAxis, renderer);
+				final CombinedDomainXYPlot combinedDomainPlot = (CombinedDomainXYPlot) this.chart.getPlot();
+
+				valueAxis.setLabel("");
+				valueAxis.setAutoRangeIncludesZero(false);
+				renderer.setSeriesShape(0, new Rectangle2D.Double(-3.0, -3.0, 3.0, 3.0));
+				this.dataTableModel.addEntries(timeSeriesCollection);
+				combinedDomainPlot.add(linePlot, 1);
+				this.dataTableModel.addEntries(timeSeriesCollection);
+			}
+		}
+		theme.apply(chart);
 	}
 
 	@Override

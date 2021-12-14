@@ -16,10 +16,14 @@ import javax.swing.JFrame;
 
 import org.sjwimmer.ta4jchart.chartbuilder.ChartBuilder;
 import org.sjwimmer.ta4jchart.chartbuilder.ChartBuilderImpl;
+import org.sjwimmer.ta4jchart.chartbuilder.ChartType;
+import org.sjwimmer.ta4jchart.chartbuilder.PlotType;
 import org.ta4j.core.*;
 import org.ta4j.core.indicators.EMAIndicator;
+import org.ta4j.core.indicators.ParabolicSarIndicator;
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 import org.ta4j.core.indicators.helpers.HighPriceIndicator;
+import org.ta4j.core.indicators.helpers.VolumeIndicator;
 import org.ta4j.core.rules.CrossedDownIndicatorRule;
 import org.ta4j.core.rules.CrossedUpIndicatorRule;
 
@@ -30,7 +34,9 @@ public class Starter {
 		
 		// 1 Create a barSeries, indicators and run your strategy
 		BarSeries barSeries = loadAppleIncSeries();
+		VolumeIndicator volume = new VolumeIndicator(barSeries);
 		HighPriceIndicator highPrice = new HighPriceIndicator(barSeries);
+		ParabolicSarIndicator parabolicSar = new ParabolicSarIndicator(barSeries);
 		ClosePriceIndicator closePrice = new ClosePriceIndicator(barSeries);
 		EMAIndicator longEma = new EMAIndicator(closePrice, 20);
 		EMAIndicator shortEma = new EMAIndicator(closePrice, 6);
@@ -42,9 +48,11 @@ public class Starter {
 
 		// 2 Add your ta4j objects to a ChartBuilder instance
 		ChartBuilder chartBuilder = new ChartBuilderImpl(barSeries);
-		chartBuilder.addIndicator(highPrice);
-		chartBuilder.addIndicator(longEma);
-		chartBuilder.addIndicator(shortEma);
+
+		chartBuilder.addIndicator(volume, PlotType.SUBPLOT, ChartType.BAR);
+		chartBuilder.addIndicator(parabolicSar, PlotType.OVERLAY, ChartType.LINE);
+		chartBuilder.addIndicator(longEma, PlotType.SUBPLOT, ChartType.LINE);
+		chartBuilder.addIndicator(shortEma, PlotType.OVERLAY, ChartType.LINE);
 		chartBuilder.setTradingRecord(tradingRecord);
 
 		// 3 Create JFrame
@@ -67,7 +75,7 @@ public class Starter {
      * @return the bar series from Apple Inc. bars.
      */
     public static BarSeries loadAppleIncSeries() {
-        return loadCsvSeries("appleinc_bars_from_20130101_usd.csv");
+        return loadCsvSeries("appleinc_bars_from_20130101_usd_small.csv");
     }
 
     public static BarSeries loadCsvSeries(String filename) {

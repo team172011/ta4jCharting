@@ -11,7 +11,10 @@ import org.ta4j.core.num.Num;
 public interface ChartBuilder {
 
 	JPanel createPlot();
-	void addIndicator(Indicator<Num> indicator);
-	void setTradingRecord(TradingRecord tradingRecord);
 
+	void addIndicator(Indicator<Num> indicator);
+
+	void addIndicator(Indicator<Num> indicator, PlotType plotType, ChartType chartType);
+
+	void setTradingRecord(TradingRecord tradingRecord);
 }
