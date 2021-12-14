@@ -10,7 +10,7 @@ import org.ta4j.core.num.Num;
 
 import java.util.Date;
 
-public class IndicatorConverterImpl implements IndicatorConverter {
+public class IndicatorToTimeSeriesConverterImpl implements IndicatorToTimeSeriesConverter {
 
 	@Override
 	public TimeSeriesCollection apply(Indicator<Num> indicator) {

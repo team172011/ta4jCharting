@@ -42,7 +42,6 @@ public class TacChartMouseListener implements ChartMouseListener {
         int x = event.getTrigger().getY();
         int y = event.getTrigger().getY();
         final Point p = new Point(x, y);
-        System.out.println("raw X: " + x);
         final ChartRenderingInfo chartRenderingInfo = chartPanel.getChartRenderingInfo();
 
         final Point point = chartPanel.translateJava2DToScreen(p);
@@ -57,7 +56,6 @@ public class TacChartMouseListener implements ChartMouseListener {
             java.util.List subplots = combinedDomainXYPlot.getSubplots();
             Iterator iterator = subplots.iterator();
             int index = 0;
-            System.out.println("X: " + xx);
 
             while (iterator.hasNext()) {
                 XYPlot subPlot = (XYPlot) iterator.next();
@@ -67,7 +65,6 @@ public class TacChartMouseListener implements ChartMouseListener {
                     double yy = subPlot.getRangeAxis().java2DToValue(point.getY(), panelArea, subPlot.getRangeAxisEdge());
                     subPlot.setRangeCrosshairVisible(true);
                     subPlot.setRangeCrosshairValue(yy);
-                    System.out.println("Y: " + yy);
                 } else {
                     subPlot.setRangeCrosshairVisible(false);
                 }

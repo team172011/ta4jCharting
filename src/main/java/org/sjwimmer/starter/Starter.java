@@ -52,7 +52,7 @@ public class Starter {
 		chartBuilder.addIndicator(volume, PlotType.SUBPLOT, ChartType.BAR);
 		chartBuilder.addIndicator(parabolicSar, PlotType.OVERLAY, ChartType.LINE);
 		chartBuilder.addIndicator(longEma, PlotType.SUBPLOT, ChartType.LINE);
-		chartBuilder.addIndicator(shortEma, PlotType.OVERLAY, ChartType.LINE);
+		chartBuilder.addIndicator(shortEma); // default: PlotType.OVERLAY, ChartType.LINE
 		chartBuilder.setTradingRecord(tradingRecord);
 
 		// 3 Create JFrame
@@ -66,7 +66,6 @@ public class Starter {
 		    frame.pack();
 		    frame.setVisible(true);
 		});
-
 	}
 
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
