@@ -167,7 +167,7 @@ public class ChartBuilderImpl implements ChartBuilder {
 		}
 
 		if(tradingRecord.getLastExit() != null){
-			final XYPlot mainPlot = chart.getXYPlot();
+			final XYPlot mainPlot = ((XYPlot)((CombinedDomainXYPlot) chart.getPlot()).getSubplots().get(0));
 			final java.util.List<Position> trades = tradingRecord.getPositions();
 			final Trade.TradeType orderType = tradingRecord.getLastExit().getType().complementType();
 			final List<Marker> markers = new ArrayList<>();
@@ -183,8 +183,8 @@ public class ChartBuilderImpl implements ChartBuilder {
 						this.barSeries.getBar(entryIndex).getEndTime().toInstant())).getFirstMillisecond();
 				double exit = new Minute(Date.from(
 						this.barSeries.getBar(exitIndex).getEndTime().toInstant())).getFirstMillisecond();
-				tradeData.set(entryIndex, "Enter");
-				tradeData.set(exitIndex, "Exit");
+				tradeData.set(entryIndex, trade.getEntry());
+				tradeData.set(exitIndex, trade.getExit());
 				ValueMarker in = new ValueMarker(entry);
 				in.setLabel(orderType.toString());
 				in.setLabelPaint(Color.WHITE);

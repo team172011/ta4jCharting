@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.sjwimmer.ta4jchart.chart.GlobalConstants;
 import org.sjwimmer.ta4jchart.chart.elements.data.DataTableModel;
+import org.ta4j.core.Trade;
 
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
@@ -35,7 +36,19 @@ public class TacDataTable extends JTable {
         setDefaultRenderer(Object.class, (table, value, isSelected, hasFocus, row, column) -> {
             if (value instanceof Number) {
                 return new JTextField(value.toString());
-            } else {
+            } else if (value instanceof Trade) {
+                Trade trade = (Trade) value;
+                JTextField tradeInfo = new JTextField();
+                if(trade.isBuy()) {
+                    tradeInfo.setText("BUY");
+                    tradeInfo.setBackground(Color.GREEN);
+                } else {
+                    tradeInfo.setText("SEL");
+                    tradeInfo.setBackground(Color.RED);
+                }
+                return tradeInfo;
+            }
+            else {
                 return new JTextField(value.toString());
             }
         });
