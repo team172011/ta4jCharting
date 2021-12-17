@@ -3,23 +3,25 @@ package org.sjwimmer.ta4jchart.chart;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jfree.chart.*;
-import org.jfree.chart.annotations.XYBoxAnnotation;
-import org.jfree.chart.annotations.XYTextAnnotation;
 import org.jfree.chart.event.OverlayChangeListener;
 import org.jfree.chart.panel.Overlay;
 import org.jfree.chart.plot.CombinedDomainXYPlot;
-import org.jfree.chart.plot.Plot;
 import org.jfree.chart.plot.PlotRenderingInfo;
 import org.jfree.chart.plot.XYPlot;
-import org.ta4j.core.num.DoubleNum;
+import org.jfree.data.xy.XYDataset;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
+import java.text.ParseException;
+import java.time.Instant;
+import java.util.Date;
 import java.util.Iterator;
 
-public class TacChartMouseListener implements ChartMouseListener, Overlay {
+import static org.sjwimmer.ta4jchart.chart.GlobalConstants.DATE_FORMATTER;
 
-    private static final Logger log = LogManager.getLogger(TacChartMouseListener.class);
+public class TacChartMouseHandler implements ChartMouseListener, Overlay {
+
+    private static final Logger log = LogManager.getLogger(TacChartMouseHandler.class);
 
     private final ChartPanel chartPanel;
     private final CombinedDomainXYPlot combinedDomainXYPlot;
@@ -28,11 +30,18 @@ public class TacChartMouseListener implements ChartMouseListener, Overlay {
     private double x = Double.NaN;
     private double y = Double.NaN;
 
-    public TacChartMouseListener(ChartPanel chartPanel) {
+    private double xx = Double.NaN;
+    private double yy = Double.NaN;
+    private boolean sticky = true;
+
+    long[] ohlcXValues;
+
+    public TacChartMouseHandler(ChartPanel chartPanel) {
         this.chartPanel = chartPanel;
         this.combinedDomainXYPlot = (CombinedDomainXYPlot) chartPanel.getChart().getPlot();
         this.mainPlot = (XYPlot) combinedDomainXYPlot.getSubplots().get(0);
         chartPanel.addOverlay(this);
+
         for(Object p: this.combinedDomainXYPlot.getSubplots()){
             if(p instanceof XYPlot) {
                 XYPlot subPlot = (XYPlot) p;
@@ -41,7 +50,12 @@ public class TacChartMouseListener implements ChartMouseListener, Overlay {
             }
         }
 
-
+        final XYDataset dataset = this.mainPlot.getDataset(0);
+        int entriesCount = dataset.getItemCount(0);
+        ohlcXValues = new long[entriesCount];
+        for(int i = 0; i< entriesCount; i++) {
+            ohlcXValues[i] = (long) dataset.getX(0, i);
+        }
     }
 
     @Override
@@ -65,34 +79,58 @@ public class TacChartMouseListener implements ChartMouseListener, Overlay {
             Rectangle2D dataArea = plotInfo.getDataArea();
             double xx = combinedDomainXYPlot.getDomainAxis().java2DToValue(point.getX(), dataArea, combinedDomainXYPlot.getDomainAxisEdge());
             log.debug("y: {} yy: {}", x, xx);
-            Rectangle2D panelArea = chartPanel.getScreenDataArea(x, y);
-            java.util.List<?>subplots = combinedDomainXYPlot.getSubplots();
-            Iterator<?> iterator = subplots.iterator();
-            int index = 0;
+            final Rectangle2D panelArea = chartPanel.getScreenDataArea(x, y);
+            final java.util.List<?>subplots = combinedDomainXYPlot.getSubplots();
+            final Iterator<?> iterator = subplots.iterator();
+            int plotIndex = 0;
             while (iterator.hasNext()) {
                 XYPlot subPlot = (XYPlot) iterator.next();
                 subPlot.setDomainCrosshairVisible(true);
-                subPlot.setDomainCrosshairValue(xx);
-                if(subplotIndex == index) {
+                subPlot.setDomainCrosshairValue(findClosestXValue(xx));
+                if(subplotIndex == plotIndex) {
                     double yy = subPlot.getRangeAxis().java2DToValue(point.getY(), panelArea, subPlot.getRangeAxisEdge());
                     log.debug("y: {} yy: {}", y, yy);
                     subPlot.setRangeCrosshairVisible(true);
                     subPlot.setRangeCrosshairValue(yy);
                     this.x = x;
                     this.y = y;
+                    this.xx = xx;
+                    this.yy = yy;
                 } else {
                     subPlot.setRangeCrosshairVisible(false);
                 }
-                index++;
+                plotIndex++;
             }
         }
     }
 
+    private double findClosestXValue(double xx) {
+        if(this.sticky && this.ohlcXValues != null) {
+            for (double x : this.ohlcXValues) {
+                if (x >= xx) {
+                    return x;
+                }
+            }
+        }
+        return xx;
+    }
+
     @Override
     public void paintOverlay(Graphics2D g2, ChartPanel chartPanel) {
-        if(this.x != Double.NaN && this.y != Double.NaN) {
-            g2.draw(new Rectangle2D.Double(x-10, y-10, 20, 20));
+        if(!Double.isNaN(x) && !Double.isNaN(y)) {
+            g2.drawString("Date: " + createDateString(xx), (int)x+10, (int)y+60);
+            g2.drawString("Price: " + yy, (int)x+10, (int)y+80);
         }
+    }
+
+    private String createDateString(double xx) {
+        Date date = Date.from(Instant.ofEpochMilli((long) findClosestXValue(xx)));
+        try {
+            return DATE_FORMATTER.valueToString(date);
+        } catch (ParseException e) {
+            log.error("", e);
+        }
+        return date.toString();
     }
 
     @Override
@@ -103,5 +141,13 @@ public class TacChartMouseListener implements ChartMouseListener, Overlay {
     @Override
     public void removeChangeListener(OverlayChangeListener listener) {
 
+    }
+
+    public boolean isSticky() {
+        return sticky;
+    }
+
+    public void setSticky(boolean sticky) {
+        this.sticky = sticky;
     }
 }

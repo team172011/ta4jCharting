@@ -1,6 +1,5 @@
 package org.sjwimmer.ta4jchart.chartbuilder;
 
-import org.jfree.chart.ChartMouseListener;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
@@ -12,10 +11,12 @@ import org.jfree.chart.ui.RectangleAnchor;
 import org.jfree.data.time.Minute;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.DefaultHighLowDataset;
-import org.sjwimmer.ta4jchart.chart.TacChartMouseListener;
+import org.sjwimmer.ta4jchart.chart.TacChartMouseHandler;
 import org.sjwimmer.ta4jchart.chart.dataset.TacBarDataset;
+import org.sjwimmer.ta4jchart.chart.elements.TacDataTable;
+import org.sjwimmer.ta4jchart.chart.elements.TacStickyCrossHairButton;
 import org.sjwimmer.ta4jchart.converter.*;
-import org.sjwimmer.ta4jchart.data.DataTableModel;
+import org.sjwimmer.ta4jchart.chart.elements.data.DataTableModel;
 import org.sjwimmer.ta4jchart.chart.renderer.TacBarRenderer;
 import org.sjwimmer.ta4jchart.chart.renderer.TacCandlestickRenderer;
 import org.sjwimmer.ta4jchart.chart.renderer.TacChartTheme;
@@ -61,11 +62,16 @@ public class ChartBuilderImpl implements ChartBuilder {
 	@Override
 	public JPanel createPlot() {
 		final JPanel mainPanel = new JPanel(new BorderLayout());
-		final JTable dataTable = new JTable(dataTableModel);
-		final ChartPanel chartPanel = new ChartPanel(chart);
+		final TacDataTable dataTable = new TacDataTable(dataTableModel);
 
+		final ChartPanel chartPanel = new ChartPanel(chart);
+		final JToolBar toolBar = new JToolBar("Action");
+		final TacChartMouseHandler mouseHandler = new TacChartMouseHandler(chartPanel);
+
+		toolBar.add(new TacStickyCrossHairButton(mouseHandler));
+		mainPanel.add(toolBar, BorderLayout.NORTH);
 		mainPanel.add(chartPanel, BorderLayout.CENTER);
-		chartPanel.addChartMouseListener(new TacChartMouseListener(chartPanel));
+		chartPanel.addChartMouseListener(mouseHandler);
 		if (chartBuilderConfig.isPlotDataTable()) {
 			mainPanel.add(new JScrollPane(dataTable), BorderLayout.EAST);
 		}
@@ -87,6 +93,7 @@ public class ChartBuilderImpl implements ChartBuilder {
 		valueAxis.setAutoRangeIncludesZero(false);
 		candlestickRenderer.setAutoWidthMethod(1);
 		candlestickRenderer.setDrawVolume(false);
+		candlestickRenderer.setDefaultItemLabelsVisible(false);
 
 		final JFreeChart chart = new JFreeChart(seriesName, JFreeChart.DEFAULT_TITLE_FONT,
 				combinedDomainPlot, true);
@@ -154,13 +161,13 @@ public class ChartBuilderImpl implements ChartBuilder {
 
 	@Override
 	public void setTradingRecord(TradingRecord tradingRecord) {
-		List<String> tradeData = new ArrayList<>();
+		List<Object> tradeData = new ArrayList<>();
 		for(int i = this.barSeries.getBeginIndex(); i < this.barSeries.getBarCount(); i++){
 			tradeData.add("-");
 		}
 
 		if(tradingRecord.getLastExit() != null){
-			final XYPlot mainPlot = chart.getXYPlot();
+			final XYPlot mainPlot = ((XYPlot)((CombinedDomainXYPlot) chart.getPlot()).getSubplots().get(0));
 			final java.util.List<Position> trades = tradingRecord.getPositions();
 			final Trade.TradeType orderType = tradingRecord.getLastExit().getType().complementType();
 			final List<Marker> markers = new ArrayList<>();
@@ -176,8 +183,8 @@ public class ChartBuilderImpl implements ChartBuilder {
 						this.barSeries.getBar(entryIndex).getEndTime().toInstant())).getFirstMillisecond();
 				double exit = new Minute(Date.from(
 						this.barSeries.getBar(exitIndex).getEndTime().toInstant())).getFirstMillisecond();
-				tradeData.set(entryIndex, "Enter");
-				tradeData.set(exitIndex, "Exit");
+				tradeData.set(entryIndex, trade.getEntry());
+				tradeData.set(exitIndex, trade.getExit());
 				ValueMarker in = new ValueMarker(entry);
 				in.setLabel(orderType.toString());
 				in.setLabelPaint(Color.WHITE);

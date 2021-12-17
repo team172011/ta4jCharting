@@ -74,7 +74,7 @@ public class Starter {
      * @return the bar series from Apple Inc. bars.
      */
     public static BarSeries loadAppleIncSeries() {
-        return loadCsvSeries("appleinc_bars_from_20130101_usd_small.csv");
+        return loadCsvSeries("appleinc_bars_from_20130101_usd.csv");
     }
 
     public static BarSeries loadCsvSeries(String filename) {
