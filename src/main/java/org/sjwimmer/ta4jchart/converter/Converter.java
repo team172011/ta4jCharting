@@ -1,6 +1,7 @@
 package org.sjwimmer.ta4jchart.converter;
 
 import org.ta4j.core.Bar;
+import org.ta4j.core.analysis.Returns;
 
 import java.util.ServiceLoader;
 import java.util.function.Consumer;
@@ -14,6 +15,9 @@ import java.util.function.Supplier;
 public interface Converter<T, R> extends Function<T, R> {
 
 	default String getName(T element){
+		if(element instanceof Returns) {
+			return "Returns";
+		}
 		return String.valueOf(element).replaceAll("Indicator", "").replaceAll("barCount", "");
 	}
 
