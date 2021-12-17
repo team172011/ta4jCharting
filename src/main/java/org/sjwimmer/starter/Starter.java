@@ -19,6 +19,7 @@ import org.sjwimmer.ta4jchart.chartbuilder.ChartBuilderImpl;
 import org.sjwimmer.ta4jchart.chartbuilder.ChartType;
 import org.sjwimmer.ta4jchart.chartbuilder.PlotType;
 import org.ta4j.core.*;
+import org.ta4j.core.analysis.Returns;
 import org.ta4j.core.indicators.EMAIndicator;
 import org.ta4j.core.indicators.ParabolicSarIndicator;
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
@@ -46,6 +47,8 @@ public class Starter {
 		Strategy strategy = new BaseStrategy(entry, exit);
 		TradingRecord tradingRecord = new BarSeriesManager(barSeries).run(strategy);
 
+		Returns returns = new Returns(barSeries, tradingRecord, Returns.ReturnType.ARITHMETIC);
+
 		// 2 Add your ta4j objects to a ChartBuilder instance
 		ChartBuilder chartBuilder = new ChartBuilderImpl(barSeries);
 
@@ -53,6 +56,7 @@ public class Starter {
 		chartBuilder.addIndicator(parabolicSar, PlotType.OVERLAY, ChartType.LINE);
 		chartBuilder.addIndicator(longEma, PlotType.SUBPLOT, ChartType.LINE);
 		chartBuilder.addIndicator(shortEma); // default: PlotType.OVERLAY, ChartType.LINE
+		chartBuilder.addIndicator(returns, PlotType.SUBPLOT); // default: ChartType.LINE
 		chartBuilder.setTradingRecord(tradingRecord);
 
 		// 3 Create JFrame

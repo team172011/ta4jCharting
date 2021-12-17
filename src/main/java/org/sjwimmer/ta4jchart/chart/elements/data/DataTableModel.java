@@ -4,6 +4,8 @@ import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.time.ohlc.OHLCSeriesCollection;
 import org.jfree.data.xy.OHLCDataset;
 import org.jfree.data.xy.XYDataset;
+import org.jfree.data.xy.XYSeries;
+import org.sjwimmer.ta4jchart.chart.dataset.TacBarDataset;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -24,6 +26,15 @@ public class DataTableModel extends AbstractTableModel{
 
 	public void addEntries(String columnName, List<Object> values) {
 		this.data.put(columnName, values);
+	}
+
+	public void addEntries(TacBarDataset barDataset) {
+		final List<Object> values = new ArrayList<>();
+		XYSeries series = barDataset.getSeries(0);
+		for(int i = 0; i < series.getItemCount(); i++) {
+			values.add(series.getX(i));
+		}
+		this.addEntries(barDataset.getSeriesKey(0).toString(), values);
 	}
 
 	public void addEntries(OHLCDataset xyDataset) {

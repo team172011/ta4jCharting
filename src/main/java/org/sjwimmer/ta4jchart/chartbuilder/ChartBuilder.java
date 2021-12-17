@@ -12,7 +12,13 @@ public interface ChartBuilder {
 
 	JPanel createPlot();
 
-	void addIndicator(Indicator<Num> indicator);
+	default void addIndicator(Indicator<Num> indicator){
+		addIndicator(indicator, PlotType.OVERLAY, ChartType.LINE);
+	}
+
+	default void addIndicator(Indicator<Num> indicator, PlotType plotType){
+		addIndicator(indicator, plotType, ChartType.LINE);
+	}
 
 	void addIndicator(Indicator<Num> indicator, PlotType plotType, ChartType chartType);
 

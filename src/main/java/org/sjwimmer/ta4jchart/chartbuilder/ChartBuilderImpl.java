@@ -131,6 +131,7 @@ public class ChartBuilderImpl implements ChartBuilder {
 
 				candlestickPlot.setRenderer(counter, barRenderer);
 				candlestickPlot.setDataset(counter, barDataset);
+				this.dataTableModel.addEntries(barDataset);
 			}
 		} else if (plotType == PlotType.SUBPLOT) {
 			if(chartType == ChartType.BAR) {
@@ -140,6 +141,7 @@ public class ChartBuilderImpl implements ChartBuilder {
 				final XYPlot barPlot = new XYPlot(barDataset, null, valueAxis, barRenderer);
 				final CombinedDomainXYPlot combinedDomainPlot = (CombinedDomainXYPlot) this.chart.getPlot();
 				valueAxis.setLabel("");
+				this.dataTableModel.addEntries(barDataset);
 				combinedDomainPlot.add(barPlot, 1);
 			} else if (chartType == ChartType.LINE) {
 				final TimeSeriesCollection timeSeriesCollection = this.indicatorConverter.apply(indicator);
@@ -153,7 +155,6 @@ public class ChartBuilderImpl implements ChartBuilder {
 				renderer.setSeriesShape(0, new Rectangle2D.Double(-3.0, -3.0, 3.0, 3.0));
 				this.dataTableModel.addEntries(timeSeriesCollection);
 				combinedDomainPlot.add(linePlot, 1);
-				this.dataTableModel.addEntries(timeSeriesCollection);
 			}
 		}
 		theme.apply(chart);
