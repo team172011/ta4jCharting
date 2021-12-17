@@ -1,6 +1,7 @@
 package org.sjwimmer.ta4jchart.data;
 
 import org.junit.jupiter.api.Test;
+import org.sjwimmer.ta4jchart.chart.elements.data.DataTableModel;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,7 +13,7 @@ class DataTableModelTest {
     @Test
     public void testDataModel() {
         final String columnName = "Test";
-        final List<String> columnValues = Arrays.asList("A", "B", "C", "1", "2", "3");
+        final List<Object> columnValues = Arrays.asList("A", "B", "C", "1", "2", "3");
         DataTableModel dataTableModel = new DataTableModel();
         dataTableModel.addEntries(columnName, columnValues);
 
