@@ -38,6 +38,7 @@ public class TacChartMouseHandler implements ChartMouseListener, Overlay {
 
     public TacChartMouseHandler(ChartPanel chartPanel) {
         this.chartPanel = chartPanel;
+        this.chartPanel.addChartMouseListener(this);
         this.combinedDomainXYPlot = (CombinedDomainXYPlot) chartPanel.getChart().getPlot();
         this.mainPlot = (XYPlot) combinedDomainXYPlot.getSubplots().get(0);
         chartPanel.addOverlay(this);

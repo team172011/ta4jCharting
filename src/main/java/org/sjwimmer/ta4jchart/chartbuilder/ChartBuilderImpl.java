@@ -14,6 +14,7 @@ import org.jfree.data.xy.DefaultHighLowDataset;
 import org.sjwimmer.ta4jchart.chart.TacChartMouseHandler;
 import org.sjwimmer.ta4jchart.chart.dataset.TacBarDataset;
 import org.sjwimmer.ta4jchart.chart.elements.TacDataTable;
+import org.sjwimmer.ta4jchart.chart.elements.TacShowDataButton;
 import org.sjwimmer.ta4jchart.chart.elements.TacStickyCrossHairButton;
 import org.sjwimmer.ta4jchart.converter.*;
 import org.sjwimmer.ta4jchart.chart.elements.data.DataTableModel;
@@ -42,7 +43,6 @@ public class ChartBuilderImpl implements ChartBuilder {
 	private final IndicatorToBarDataConverter indicatorToBarDataConverter;
 	private final JFreeChart chart;
 	private final DataTableModel dataTableModel = new DataTableModel();
-	private final ChartBuilderConfig chartBuilderConfig;
 
 	private int overlayIds = 2; // 0 = ohlcv data, 1 = volume data
 		
@@ -54,7 +54,6 @@ public class ChartBuilderImpl implements ChartBuilder {
 		this.barSeriesConverter = barseriesPlotter;
 		this.indicatorConverter = indicatorConverter;
 		this.indicatorToBarDataConverter = indicatorToBarDataConverter;
-		this.chartBuilderConfig = chartBuilderConfig;
 		this.barSeries = barSeries;
 		chart = createCandlestickChart(this.barSeries, dataTableModel);
 	}
@@ -63,18 +62,16 @@ public class ChartBuilderImpl implements ChartBuilder {
 	public JPanel createPlot() {
 		final JPanel mainPanel = new JPanel(new BorderLayout());
 		final TacDataTable dataTable = new TacDataTable(dataTableModel);
-
+		final JScrollPane jScrollPane = new JScrollPane(dataTable);
 		final ChartPanel chartPanel = new ChartPanel(chart);
 		final JToolBar toolBar = new JToolBar("Action");
-		final TacChartMouseHandler mouseHandler = new TacChartMouseHandler(chartPanel);
 
-		toolBar.add(new TacStickyCrossHairButton(mouseHandler));
+		toolBar.add(new TacStickyCrossHairButton(new TacChartMouseHandler(chartPanel)));
+		toolBar.add(new TacShowDataButton(dataTable, mainPanel));
 		mainPanel.add(toolBar, BorderLayout.NORTH);
 		mainPanel.add(chartPanel, BorderLayout.CENTER);
-		chartPanel.addChartMouseListener(mouseHandler);
-		if (chartBuilderConfig.isPlotDataTable()) {
-			mainPanel.add(new JScrollPane(dataTable), BorderLayout.EAST);
-		}
+
+		mainPanel.add(jScrollPane, BorderLayout.EAST);
 
 		return mainPanel;
 	}

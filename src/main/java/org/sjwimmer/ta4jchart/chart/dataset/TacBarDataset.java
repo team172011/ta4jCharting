@@ -14,11 +14,9 @@ public class TacBarDataset extends XYSeriesCollection implements IntervalXYDatas
         this.barSize = (barSize - barSize * padding) / 2d;
     }
 
-
     @Override
     public double getEndXValue(int series, int item) {
         double endXValue = super.getEndXValue(series, item);
-
         return endXValue + barSize;
     }
 

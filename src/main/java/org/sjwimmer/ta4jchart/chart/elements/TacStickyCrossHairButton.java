@@ -11,7 +11,7 @@ public class TacStickyCrossHairButton extends JToggleButton implements ActionLis
     private final TacChartMouseHandler mouseHandler;
 
     public TacStickyCrossHairButton(TacChartMouseHandler mouseHandler) {
-        super("Sticky Cross hair");
+        super("Sticky Cross Hair");
         this.mouseHandler = mouseHandler;
         setSelected(true);
         addActionListener(this);

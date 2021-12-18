@@ -1,15 +1,21 @@
 package org.sjwimmer.starter;
 
 import java.awt.BorderLayout;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.swing.JFrame;
@@ -34,23 +40,22 @@ public class Starter {
 	public static void main(String[] args) {
 		
 		// 1 Create a barSeries, indicators and run your strategy
-		BarSeries barSeries = loadAppleIncSeries();
-		VolumeIndicator volume = new VolumeIndicator(barSeries);
-		HighPriceIndicator highPrice = new HighPriceIndicator(barSeries);
-		ParabolicSarIndicator parabolicSar = new ParabolicSarIndicator(barSeries);
-		ClosePriceIndicator closePrice = new ClosePriceIndicator(barSeries);
-		EMAIndicator longEma = new EMAIndicator(closePrice, 20);
-		EMAIndicator shortEma = new EMAIndicator(closePrice, 6);
-		CrossedDownIndicatorRule exit = new CrossedDownIndicatorRule(shortEma, longEma);
-		CrossedUpIndicatorRule entry = new CrossedUpIndicatorRule(shortEma, longEma);
+		final BarSeries barSeries = loadAppleIncSeries();
+		final VolumeIndicator volume = new VolumeIndicator(barSeries);
+		final ParabolicSarIndicator parabolicSar = new ParabolicSarIndicator(barSeries);
+		final ClosePriceIndicator closePrice = new ClosePriceIndicator(barSeries);
+		final EMAIndicator longEma = new EMAIndicator(closePrice, 20);
+		final EMAIndicator shortEma = new EMAIndicator(closePrice, 6);
+		final CrossedDownIndicatorRule exit = new CrossedDownIndicatorRule(shortEma, longEma);
+		final CrossedUpIndicatorRule entry = new CrossedUpIndicatorRule(shortEma, longEma);
 
-		Strategy strategy = new BaseStrategy(entry, exit);
-		TradingRecord tradingRecord = new BarSeriesManager(barSeries).run(strategy);
+		final Strategy strategy = new BaseStrategy(entry, exit);
+		final TradingRecord tradingRecord = new BarSeriesManager(barSeries).run(strategy);
 
-		Returns returns = new Returns(barSeries, tradingRecord, Returns.ReturnType.ARITHMETIC);
+		final Returns returns = new Returns(barSeries, tradingRecord, Returns.ReturnType.ARITHMETIC);
 
 		// 2 Add your ta4j objects to a ChartBuilder instance
-		ChartBuilder chartBuilder = new ChartBuilderImpl(barSeries);
+		final ChartBuilder chartBuilder = new ChartBuilderImpl(barSeries);
 
 		chartBuilder.addIndicator(volume, PlotType.SUBPLOT, ChartType.BAR);
 		chartBuilder.addIndicator(parabolicSar, PlotType.OVERLAY, ChartType.LINE);
@@ -61,7 +66,7 @@ public class Starter {
 
 		// 3 Create JFrame
 		javax.swing.SwingUtilities.invokeLater(() -> {
-		    JFrame frame = new JFrame("Ta4j charting");
+			final JFrame frame = new JFrame("Ta4j charting");
 		    frame.setLayout(new BorderLayout());
 		    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		    
@@ -82,31 +87,25 @@ public class Starter {
     }
 
     public static BarSeries loadCsvSeries(String filename) {
-
-        URI uri;
 		try {
-			uri = Starter.class.getClassLoader().getResource(filename).toURI();
-			BarSeries series = new BaseBarSeries("AAPL");
-
-	        try(Stream<String> lines = Files.lines(Paths.get(uri))){
-	        	lines.forEach(st -> {
-		        	String[] line = st.split(",");
-		            ZonedDateTime date = LocalDate.parse(line[0], DATE_FORMAT).atStartOfDay(ZoneId.systemDefault());
-		            double open = Double.parseDouble(line[1]);
-		            double high = Double.parseDouble(line[2]);
-		            double low = Double.parseDouble(line[3]);
-		            double close = Double.parseDouble(line[4]);
-		            double volume = Double.parseDouble(line[5]);
-		            series.addBar(date, open, high, low, close, volume);
-	        	});
+			final InputStream inputStream = Starter.class.getClassLoader().getResourceAsStream(filename);
+			final BarSeries series = new BaseBarSeries("AAPL");
+			new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))
+					.lines()
+					.forEach(st -> {
+						final String[] line = st.split(",");
+						final ZonedDateTime date = LocalDate.parse(line[0], DATE_FORMAT).atStartOfDay(ZoneId.systemDefault());
+						double open = Double.parseDouble(line[1]);
+						double high = Double.parseDouble(line[2]);
+						double low = Double.parseDouble(line[3]);
+						double close = Double.parseDouble(line[4]);
+						double volume = Double.parseDouble(line[5]);
+						series.addBar(date, open, high, low, close, volume);
+					});
 	        	return series;
-	        }
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
     }
-
 }
