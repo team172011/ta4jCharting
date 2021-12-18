@@ -14,14 +14,20 @@ import java.util.function.Supplier;
  */
 public interface Converter<T, R> extends Function<T, R> {
 
-	default String getName(T element){
-		if(element instanceof Returns) {
-			return "Returns";
-		}
-		return String.valueOf(element).replaceAll("Indicator", "").replaceAll("barCount", "");
+	default String getName(T element) {
+		return getNameFunction().apply(element);
 	}
 
 	default long getMilliseconds(Bar currentBar) {
 		return currentBar.getEndTime().toEpochSecond() * 1000;
+	}
+
+	default Function<T, String> getNameFunction(){
+		return element -> {
+			if(element instanceof Returns) {
+				return "Returns";
+			}
+			return String.valueOf(element).replaceAll("Indicator", "").replaceAll("barCount", "");
+		};
 	}
 }
