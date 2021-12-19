@@ -3,6 +3,7 @@ package org.sjwimmer.ta4jchart.converter;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.junit.jupiter.api.Test;
 import org.sjwimmer.ta4jchart.BarSeriesHelper;
+import org.sjwimmer.ta4jchart.chartbuilder.converter.IndicatorToTimeSeriesConverterImpl;
 import org.ta4j.core.BaseBarSeriesBuilder;
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 

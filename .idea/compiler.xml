@@ -10,7 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="ta4j-charting" target="1.11" />
+      <module name="ta4j-charting" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>

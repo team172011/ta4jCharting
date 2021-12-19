@@ -1,12 +1,10 @@
 package org.sjwimmer.ta4jchart.chartbuilder;
 
-import javax.swing.JPanel;
-
-import org.ta4j.core.BarSeries;
 import org.ta4j.core.Indicator;
-import org.ta4j.core.Strategy;
 import org.ta4j.core.TradingRecord;
 import org.ta4j.core.num.Num;
+
+import javax.swing.*;
 
 public interface ChartBuilder {
 

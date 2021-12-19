@@ -3,6 +3,7 @@ package org.sjwimmer.ta4jchart.converter;
 import org.jfree.data.xy.OHLCDataset;
 import org.junit.jupiter.api.Test;
 import org.sjwimmer.ta4jchart.BarSeriesHelper;
+import org.sjwimmer.ta4jchart.chartbuilder.converter.BarSeriesConverterImpl;
 import org.ta4j.core.BaseBarSeries;
 import org.ta4j.core.BaseBarSeriesBuilder;
 
