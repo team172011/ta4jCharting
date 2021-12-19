@@ -1,6 +1,6 @@
-package org.sjwimmer.ta4jchart.chart.elements;
+package org.sjwimmer.ta4jchart.chartbuilder.toolbar;
 
-import org.sjwimmer.ta4jchart.chart.TacChartMouseHandler;
+import org.sjwimmer.ta4jchart.chartbuilder.crosshair.TacChartMouseHandler;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -15,6 +15,7 @@ public class TacStickyCrossHairButton extends JToggleButton implements ActionLis
         this.mouseHandler = mouseHandler;
         setSelected(true);
         addActionListener(this);
+        setToolTipText("If enabled the domain cross hair will stick to the nearest date entry");
     }
 
     @Override

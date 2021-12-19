@@ -1,4 +1,4 @@
-package org.sjwimmer.ta4jchart.chart.renderer;
+package org.sjwimmer.ta4jchart.chartbuilder.crosshair;
 
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;

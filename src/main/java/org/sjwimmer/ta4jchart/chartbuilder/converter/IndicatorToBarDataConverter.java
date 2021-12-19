@@ -1,6 +1,5 @@
-package org.sjwimmer.ta4jchart.converter;
+package org.sjwimmer.ta4jchart.chartbuilder.converter;
 
-import org.sjwimmer.ta4jchart.chart.dataset.TacBarDataset;
 import org.ta4j.core.Indicator;
 import org.ta4j.core.num.Num;
 

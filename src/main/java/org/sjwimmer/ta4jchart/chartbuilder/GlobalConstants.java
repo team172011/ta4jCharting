@@ -1,4 +1,4 @@
-package org.sjwimmer.ta4jchart.chart;
+package org.sjwimmer.ta4jchart.chartbuilder;
 
 import javax.swing.text.DateFormatter;
 import java.text.DateFormat;

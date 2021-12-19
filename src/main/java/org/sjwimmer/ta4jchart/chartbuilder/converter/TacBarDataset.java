@@ -1,4 +1,4 @@
-package org.sjwimmer.ta4jchart.chart.dataset;
+package org.sjwimmer.ta4jchart.chartbuilder.converter;
 
 import org.jfree.data.xy.IntervalXYDataset;
 import org.jfree.data.xy.XYSeries;

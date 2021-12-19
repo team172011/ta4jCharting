@@ -1,4 +1,4 @@
-package org.sjwimmer.ta4jchart.converter;
+package org.sjwimmer.ta4jchart.chartbuilder.converter;
 
 import org.jfree.data.xy.DefaultHighLowDataset;
 import org.ta4j.core.BarSeries;

@@ -1,8 +1,11 @@
-package org.sjwimmer.ta4jchart.chart;
+package org.sjwimmer.ta4jchart.chartbuilder.crosshair;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jfree.chart.*;
+import org.jfree.chart.ChartMouseEvent;
+import org.jfree.chart.ChartMouseListener;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.ChartRenderingInfo;
 import org.jfree.chart.event.OverlayChangeListener;
 import org.jfree.chart.panel.Overlay;
 import org.jfree.chart.plot.CombinedDomainXYPlot;
@@ -17,7 +20,7 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.Iterator;
 
-import static org.sjwimmer.ta4jchart.chart.GlobalConstants.DATE_FORMATTER;
+import static org.sjwimmer.ta4jchart.chartbuilder.GlobalConstants.DATE_FORMATTER;
 
 public class TacChartMouseHandler implements ChartMouseListener, Overlay {
 
@@ -120,7 +123,7 @@ public class TacChartMouseHandler implements ChartMouseListener, Overlay {
     public void paintOverlay(Graphics2D g2, ChartPanel chartPanel) {
         if(!Double.isNaN(x) && !Double.isNaN(y)) {
             g2.drawString("Date: " + createDateString(xx), (int)x+10, (int)y+60);
-            g2.drawString("Price: " + yy, (int)x+10, (int)y+80);
+            g2.drawString("Value: " + yy, (int)x+10, (int)y+80);
         }
     }
 

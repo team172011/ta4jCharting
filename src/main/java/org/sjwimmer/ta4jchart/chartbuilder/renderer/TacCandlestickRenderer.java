@@ -1,8 +1,7 @@
-package org.sjwimmer.ta4jchart.chart.renderer;
+package org.sjwimmer.ta4jchart.chartbuilder.renderer;
 
 import org.jfree.chart.renderer.xy.CandlestickRenderer;
 import org.jfree.data.xy.OHLCDataset;
-import org.jfree.data.xy.XYDataset;
 
 import java.awt.*;
 

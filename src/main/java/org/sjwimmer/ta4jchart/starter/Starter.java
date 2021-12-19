@@ -1,24 +1,4 @@
-package org.sjwimmer.starter;
-
-import java.awt.BorderLayout;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import javax.swing.JFrame;
+package org.sjwimmer.ta4jchart.starter;
 
 import org.sjwimmer.ta4jchart.chartbuilder.ChartBuilder;
 import org.sjwimmer.ta4jchart.chartbuilder.ChartBuilderImpl;
@@ -29,11 +9,20 @@ import org.ta4j.core.analysis.Returns;
 import org.ta4j.core.indicators.EMAIndicator;
 import org.ta4j.core.indicators.ParabolicSarIndicator;
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
-import org.ta4j.core.indicators.helpers.HighPriceIndicator;
 import org.ta4j.core.indicators.helpers.VolumeIndicator;
 import org.ta4j.core.rules.CrossedDownIndicatorRule;
 import org.ta4j.core.rules.CrossedUpIndicatorRule;
 
+import javax.swing.*;
+import java.awt.*;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Starter {
 
@@ -44,8 +33,8 @@ public class Starter {
 		final VolumeIndicator volume = new VolumeIndicator(barSeries);
 		final ParabolicSarIndicator parabolicSar = new ParabolicSarIndicator(barSeries);
 		final ClosePriceIndicator closePrice = new ClosePriceIndicator(barSeries);
-		final EMAIndicator longEma = new EMAIndicator(closePrice, 20);
-		final EMAIndicator shortEma = new EMAIndicator(closePrice, 6);
+		final EMAIndicator longEma = new EMAIndicator(closePrice, 12);
+		final EMAIndicator shortEma = new EMAIndicator(closePrice, 4);
 		final CrossedDownIndicatorRule exit = new CrossedDownIndicatorRule(shortEma, longEma);
 		final CrossedUpIndicatorRule entry = new CrossedUpIndicatorRule(shortEma, longEma);
 

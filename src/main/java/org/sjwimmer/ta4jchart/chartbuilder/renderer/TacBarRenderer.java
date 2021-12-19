@@ -1,10 +1,8 @@
-package org.sjwimmer.ta4jchart.chart.renderer;
+package org.sjwimmer.ta4jchart.chartbuilder.renderer;
 
-import org.jfree.chart.renderer.category.StandardBarPainter;
-import org.jfree.chart.renderer.xy.*;
-import org.jfree.chart.ui.GradientPaintTransformType;
-import org.jfree.chart.ui.GradientPaintTransformer;
-import org.jfree.chart.ui.StandardGradientPaintTransformer;
+import org.jfree.chart.renderer.xy.StandardXYBarPainter;
+import org.jfree.chart.renderer.xy.XYBarPainter;
+import org.jfree.chart.renderer.xy.XYBarRenderer;
 
 import java.awt.*;
 

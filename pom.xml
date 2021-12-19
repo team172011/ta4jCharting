@@ -95,7 +95,7 @@
 						<manifest>
 							<addClasspath>true</addClasspath>
 							<classpathPrefix>lib/</classpathPrefix>
-							<mainClass>org.sjwimmer.starter.Starter</mainClass>
+							<mainClass>org.sjwimmer.ta4jchart.starter.Starter</mainClass>
 						</manifest>
 					</archive>
 				</configuration>

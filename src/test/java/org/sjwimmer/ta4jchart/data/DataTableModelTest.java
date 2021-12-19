@@ -1,12 +1,12 @@
 package org.sjwimmer.ta4jchart.data;
 
 import org.junit.jupiter.api.Test;
-import org.sjwimmer.ta4jchart.chart.elements.data.DataTableModel;
+import org.sjwimmer.ta4jchart.chartbuilder.data.TacDataTableModel;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class DataTableModelTest {
 
@@ -14,7 +14,7 @@ class DataTableModelTest {
     public void testDataModel() {
         final String columnName = "Test";
         final List<Object> columnValues = Arrays.asList("A", "B", "C", "1", "2", "3");
-        DataTableModel dataTableModel = new DataTableModel();
+        TacDataTableModel dataTableModel = new TacDataTableModel();
         dataTableModel.addEntries(columnName, columnValues);
 
         assertEquals(columnName, dataTableModel.getColumnName(0));

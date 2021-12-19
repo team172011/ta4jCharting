@@ -1,12 +1,9 @@
-package org.sjwimmer.ta4jchart.converter;
+package org.sjwimmer.ta4jchart.chartbuilder.converter;
 
 import org.ta4j.core.Bar;
 import org.ta4j.core.analysis.Returns;
 
-import java.util.ServiceLoader;
-import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * Converter class should be used to convert ta4j objects like indicators, time series or trading records

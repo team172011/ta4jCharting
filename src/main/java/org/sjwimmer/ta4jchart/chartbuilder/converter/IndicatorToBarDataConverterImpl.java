@@ -1,16 +1,10 @@
-package org.sjwimmer.ta4jchart.converter;
+package org.sjwimmer.ta4jchart.chartbuilder.converter;
 
-import org.jfree.data.time.Second;
-import org.jfree.data.time.TimeSeries;
-import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.XYSeries;
-import org.sjwimmer.ta4jchart.chart.dataset.TacBarDataset;
 import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.Indicator;
 import org.ta4j.core.num.Num;
-
-import java.util.Date;
 
 public class IndicatorToBarDataConverterImpl implements IndicatorToBarDataConverter {
 

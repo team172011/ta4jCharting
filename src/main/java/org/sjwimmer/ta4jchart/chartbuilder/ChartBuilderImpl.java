@@ -5,22 +5,26 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
-import org.jfree.chart.plot.*;
+import org.jfree.chart.plot.CombinedDomainXYPlot;
+import org.jfree.chart.plot.IntervalMarker;
+import org.jfree.chart.plot.ValueMarker;
+import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.ui.RectangleAnchor;
 import org.jfree.data.time.Minute;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.DefaultHighLowDataset;
-import org.sjwimmer.ta4jchart.chart.TacChartMouseHandler;
-import org.sjwimmer.ta4jchart.chart.dataset.TacBarDataset;
-import org.sjwimmer.ta4jchart.chart.elements.TacDataTable;
-import org.sjwimmer.ta4jchart.chart.elements.TacShowDataButton;
-import org.sjwimmer.ta4jchart.chart.elements.TacStickyCrossHairButton;
-import org.sjwimmer.ta4jchart.converter.*;
-import org.sjwimmer.ta4jchart.chart.elements.data.DataTableModel;
-import org.sjwimmer.ta4jchart.chart.renderer.TacBarRenderer;
-import org.sjwimmer.ta4jchart.chart.renderer.TacCandlestickRenderer;
-import org.sjwimmer.ta4jchart.chart.renderer.TacChartTheme;
+import org.sjwimmer.ta4jchart.chartbuilder.converter.*;
+import org.sjwimmer.ta4jchart.chartbuilder.crosshair.TacChartMouseHandler;
+import org.sjwimmer.ta4jchart.chartbuilder.data.DataPanel;
+import org.sjwimmer.ta4jchart.chartbuilder.data.TacDataTableModel;
+import org.sjwimmer.ta4jchart.chartbuilder.renderer.TacBarRenderer;
+import org.sjwimmer.ta4jchart.chartbuilder.renderer.TacCandlestickRenderer;
+import org.sjwimmer.ta4jchart.chartbuilder.renderer.TacChartTheme;
+import org.sjwimmer.ta4jchart.chartbuilder.toolbar.TacShowDataButton;
+import org.sjwimmer.ta4jchart.chartbuilder.toolbar.TacShowTradingRecordButton;
+import org.sjwimmer.ta4jchart.chartbuilder.toolbar.TacStickyCrossHairButton;
+import org.sjwimmer.ta4jchart.chartbuilder.tradingrecord.TradingRecordPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.ta4j.core.*;
@@ -29,9 +33,7 @@ import org.ta4j.core.num.Num;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class ChartBuilderImpl implements ChartBuilder {
 
@@ -42,41 +44,43 @@ public class ChartBuilderImpl implements ChartBuilder {
 	private final IndicatorToTimeSeriesConverter indicatorConverter;
 	private final IndicatorToBarDataConverter indicatorToBarDataConverter;
 	private final JFreeChart chart;
-	private final DataTableModel dataTableModel = new DataTableModel();
+
+	private final TacDataTableModel dataTableModel = new TacDataTableModel();
+	private final TradingRecordPanel tradingRecordPanel = new TradingRecordPanel();
+
 
 	private int overlayIds = 2; // 0 = ohlcv data, 1 = volume data
 		
 	public ChartBuilderImpl(BarSeries barSeries) {
-		this(barSeries, new BarSeriesConverterImpl(), new IndicatorToTimeSeriesConverterImpl(), new IndicatorToBarDataConverterImpl(), new BaseChartBuilderConfig());
+		this(barSeries, new BarSeriesConverterImpl(), new IndicatorToTimeSeriesConverterImpl(), new IndicatorToBarDataConverterImpl());
 	}
 	
-	public ChartBuilderImpl(BarSeries barSeries, BarSeriesConverter barseriesPlotter, IndicatorToTimeSeriesConverter indicatorConverter, IndicatorToBarDataConverter indicatorToBarDataConverter, ChartBuilderConfig chartBuilderConfig) {
+	public ChartBuilderImpl(BarSeries barSeries, BarSeriesConverter barseriesPlotter, IndicatorToTimeSeriesConverter indicatorConverter, IndicatorToBarDataConverter indicatorToBarDataConverter) {
 		this.barSeriesConverter = barseriesPlotter;
 		this.indicatorConverter = indicatorConverter;
 		this.indicatorToBarDataConverter = indicatorToBarDataConverter;
 		this.barSeries = barSeries;
-		chart = createCandlestickChart(this.barSeries, dataTableModel);
+		this.chart = createCandlestickChart(this.barSeries);
 	}
 
 	@Override
 	public JPanel createPlot() {
 		final JPanel mainPanel = new JPanel(new BorderLayout());
-		final TacDataTable dataTable = new TacDataTable(dataTableModel);
-		final JScrollPane jScrollPane = new JScrollPane(dataTable);
 		final ChartPanel chartPanel = new ChartPanel(chart);
 		final JToolBar toolBar = new JToolBar("Action");
+		final DataPanel dataPanel = new DataPanel(dataTableModel);
 
 		toolBar.add(new TacStickyCrossHairButton(new TacChartMouseHandler(chartPanel)));
-		toolBar.add(new TacShowDataButton(dataTable, mainPanel));
-		mainPanel.add(toolBar, BorderLayout.NORTH);
-		mainPanel.add(chartPanel, BorderLayout.CENTER);
+		toolBar.add(new TacShowDataButton(dataPanel, mainPanel));
+		toolBar.add(new TacShowTradingRecordButton(tradingRecordPanel, mainPanel));
 
-		mainPanel.add(jScrollPane, BorderLayout.EAST);
+		mainPanel.add(toolBar, BorderLayout.NORTH);
+		mainPanel.add(new JScrollPane(chartPanel), BorderLayout.CENTER);
 
 		return mainPanel;
 	}
 
-	private JFreeChart createCandlestickChart(final BarSeries series, final DataTableModel dataTableModel) {
+	private JFreeChart createCandlestickChart(final BarSeries series) {
 		final String seriesName = this.barSeriesConverter.getName(series);
 		final ValueAxis timeAxis = new DateAxis("Time");
 		final NumberAxis valueAxis = new NumberAxis("Price/Value");
@@ -159,21 +163,16 @@ public class ChartBuilderImpl implements ChartBuilder {
 
 	@Override
 	public void setTradingRecord(TradingRecord tradingRecord) {
-		List<Object> tradeData = new ArrayList<>();
-		for(int i = this.barSeries.getBeginIndex(); i < this.barSeries.getBarCount(); i++){
-			tradeData.add("-");
-		}
-
+		tradingRecordPanel.setTradingRecord(tradingRecord);
 		if(tradingRecord.getLastExit() != null){
 			final XYPlot mainPlot = ((XYPlot)((CombinedDomainXYPlot) chart.getPlot()).getSubplots().get(0));
 			final java.util.List<Position> trades = tradingRecord.getPositions();
 			final Trade.TradeType orderType = tradingRecord.getLastExit().getType().complementType();
-			final List<Marker> markers = new ArrayList<>();
 			final RectangleAnchor entryAnchor = RectangleAnchor.TOP_LEFT;
 			final RectangleAnchor exitAnchor = RectangleAnchor.BOTTOM_RIGHT;
-
 			final Color entryColor = orderType == Trade.TradeType.SELL ? Color.RED : Color.GREEN;
 			final Color exitColor = orderType == Trade.TradeType.SELL ? Color.GREEN: Color.RED;
+
 			for(Position trade: trades){
 				int entryIndex = trade.getEntry().getIndex();
 				int exitIndex = trade.getExit().getIndex();
@@ -181,8 +180,6 @@ public class ChartBuilderImpl implements ChartBuilder {
 						this.barSeries.getBar(entryIndex).getEndTime().toInstant())).getFirstMillisecond();
 				double exit = new Minute(Date.from(
 						this.barSeries.getBar(exitIndex).getEndTime().toInstant())).getFirstMillisecond();
-				tradeData.set(entryIndex, trade.getEntry());
-				tradeData.set(exitIndex, trade.getExit());
 				ValueMarker in = new ValueMarker(entry);
 				in.setLabel(orderType.toString());
 				in.setLabelPaint(Color.WHITE);
@@ -200,11 +197,7 @@ public class ChartBuilderImpl implements ChartBuilder {
 				IntervalMarker imarker = new IntervalMarker(entry, exit, entryColor);
 				imarker.setAlpha(0.1f);
 				mainPlot.addDomainMarker(imarker);
-				markers.add(imarker);
-				markers.add(in);
-				markers.add(out);
 			}
-			this.dataTableModel.addEntries("Trades", tradeData);
 		} else{
 			log.error("No closed trade in trading record!");
 		}

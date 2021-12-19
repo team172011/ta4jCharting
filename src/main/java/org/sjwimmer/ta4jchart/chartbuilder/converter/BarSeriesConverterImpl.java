@@ -1,11 +1,10 @@
-package org.sjwimmer.ta4jchart.converter;
-import java.util.*;
+package org.sjwimmer.ta4jchart.chartbuilder.converter;
 
-import org.jfree.data.xy.*;
-import org.sjwimmer.ta4jchart.chart.dataset.TacBarDataset;
+import org.jfree.data.xy.DefaultHighLowDataset;
 import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
-import org.ta4j.core.num.Num;
+
+import java.util.Date;
 
 public class BarSeriesConverterImpl implements BarSeriesConverter {
 

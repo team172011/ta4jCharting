@@ -1,4 +1,4 @@
-package org.sjwimmer.ta4jchart.chart.renderer;
+package org.sjwimmer.ta4jchart.chartbuilder.renderer;
 
 import org.jfree.chart.StandardChartTheme;
 import org.jfree.chart.renderer.xy.StandardXYBarPainter;
