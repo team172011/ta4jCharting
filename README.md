@@ -2,12 +2,38 @@
 # Ta4jCharting
 A simple charting application for [ta4j](https://github.com/ta4j/ta4j).
 
-## How to build and start the example
+## Project structure
+This project is a simple maven project with a parent pom and two modules for the ta4j-charting library and the example project
+```text
+└───ta4j-charting-parent
+    ├───pom.xml
+    ├───README.md
+    └───lib
+    │    ├───pom.xml
+    │    └───src
+    │         ├───main
+    │         └───test
+    │    
+    │
+    └───example
+         ├───pom.xml
+         └───src
+             ├───main
+             └───resources
+```
+
+## How to build
+The example application and library can be build by executing:
 ```shell
 > git clone https://github.com/team172011/ta4jCharting.git
 > cd ta4jCharting
 > mvn clean package
-> java -jar target/ta4j-charting-0.0.1-SNAPSHOT.jar
+```
+
+## How to start the example
+After building the example application the example can be started by executing:
+```shell
+> java -jar example/target/example-0.0.1-SNAPSHOT.jar
 ```
 
 ## How to use

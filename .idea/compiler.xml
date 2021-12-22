@@ -6,10 +6,13 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="ta4j-charting" />
+        <module name="lib" />
+        <module name="example" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="example" target="11" />
+      <module name="lib" target="11" />
       <module name="ta4j-charting" target="11" />
     </bytecodeTargetLevel>
   </component>
