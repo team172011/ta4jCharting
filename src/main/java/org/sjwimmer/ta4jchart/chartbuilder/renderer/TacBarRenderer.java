@@ -12,6 +12,8 @@ public class TacBarRenderer extends XYBarRenderer {
 
     public TacBarRenderer(Color barColor) {
         this.barColor = barColor;
+        setBarPainter(new StandardXYBarPainter());
+        setShadowVisible(false);
     }
 
     @Override

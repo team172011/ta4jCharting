@@ -16,13 +16,28 @@ public class BarSeriesConverterImplTest {
     public void testCreateConverter(){
         final var barSeriesConverter = new BarSeriesConverterImpl();
         final double[] prices = new double[]{20, 21, 23, 24, 25, 26};
-        final BaseBarSeries barSeries = new BaseBarSeriesBuilder().withBars(BarSeriesHelper.createBars(prices)).withName("test").build();
+        final String name = "test";
+        final BaseBarSeries barSeries = new BaseBarSeriesBuilder().withBars(BarSeriesHelper.createBars(prices)).withName(name).build();
 
-        OHLCDataset dataset = barSeriesConverter.apply(barSeries);
-        String name = barSeriesConverter.getName(barSeries);
+        final OHLCDataset dataset = barSeriesConverter.convert(barSeries);
 
         assertEquals(1, dataset.getSeriesCount());
         assertEquals(prices.length, dataset.getItemCount(0));
-        assertEquals(barSeries.getName(),name);
+        assertEquals(name, dataset.getSeriesKey(0));
+    }
+
+    @Test
+    public void testCreateConverterWithName(){
+        final var barSeriesConverter = new BarSeriesConverterImpl();
+        final double[] prices = new double[]{20, 21, 23, 24, 25, 26};
+        final String name = "test";
+        final String otherName = "otherName";
+        final BaseBarSeries barSeries = new BaseBarSeriesBuilder().withBars(BarSeriesHelper.createBars(prices)).withName(name).build();
+
+        final OHLCDataset dataset = barSeriesConverter.convert(barSeries, otherName);
+
+        assertEquals(1, dataset.getSeriesCount());
+        assertEquals(prices.length, dataset.getItemCount(0));
+        assertEquals(otherName, dataset.getSeriesKey(0));
     }
 }

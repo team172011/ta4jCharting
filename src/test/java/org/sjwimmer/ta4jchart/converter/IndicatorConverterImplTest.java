@@ -18,11 +18,12 @@ public class IndicatorConverterImplTest {
         var indicatorConver = new IndicatorToTimeSeriesConverterImpl();
         var barSeries = new BaseBarSeriesBuilder().withName("test").withBars(BarSeriesHelper.createBars(prices)).build();
         var closePrice = new ClosePriceIndicator(barSeries);
+        final String name = "Close Price";
 
-        final TimeSeriesCollection seriesCollection = indicatorConver.apply(closePrice);
-        final String name = indicatorConver.getName(closePrice);
+        final TimeSeriesCollection seriesCollection = indicatorConver.convert(closePrice, name);
 
-        assertNotNull(name);
+
+        assertEquals(name, seriesCollection.getSeries(0).getKey());
         assertEquals(1, seriesCollection.getSeriesCount());
         assertEquals(prices.length, seriesCollection.getSeries(0).getItemCount());
         assertEquals(prices[0], seriesCollection.getSeries(0).getValue(0));
