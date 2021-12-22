@@ -2,7 +2,7 @@
 # Ta4jCharting
 A simple charting application for [ta4j](https://github.com/ta4j/ta4j).
 
-## How to build and start example
+## How to build and start the example
 ```shell
 > git clone https://github.com/team172011/ta4jCharting.git
 > cd ta4jCharting
@@ -12,41 +12,49 @@ A simple charting application for [ta4j](https://github.com/ta4j/ta4j).
 
 ## How to use
 ```java
-    // 1 Create a barSeries, indicators and run your strategy
-    final BarSeries barSeries = loadAppleIncSeries();
-    final VolumeIndicator volume = new VolumeIndicator(barSeries);
-    final ParabolicSarIndicator parabolicSar = new ParabolicSarIndicator(barSeries);
-    final ClosePriceIndicator closePrice = new ClosePriceIndicator(barSeries);
-    final EMAIndicator longEma = new EMAIndicator(closePrice, 20);
-    final EMAIndicator shortEma = new EMAIndicator(closePrice, 6);
-    final CrossedDownIndicatorRule exit = new CrossedDownIndicatorRule(shortEma, longEma);
-    final CrossedUpIndicatorRule entry = new CrossedUpIndicatorRule(shortEma, longEma);
-    
-    final Strategy strategy = new BaseStrategy(entry, exit);
-    final TradingRecord tradingRecord = new BarSeriesManager(barSeries).run(strategy);
-    
-    final Returns returns = new Returns(barSeries, tradingRecord, Returns.ReturnType.ARITHMETIC);
-    
-    // 2 Add your ta4j objects to a ChartBuilder instance
-    final ChartBuilder chartBuilder = new ChartBuilderImpl(barSeries);
+// 1 Create a barSeries, indicators and run your strategy with ta4j
+final BarSeries barSeries = loadAppleIncSeries();
+final VolumeIndicator volume = new VolumeIndicator(barSeries);
+final ParabolicSarIndicator parabolicSar = new ParabolicSarIndicator(barSeries);
+final ClosePriceIndicator closePrice = new ClosePriceIndicator(barSeries);
+final EMAIndicator longEma = new EMAIndicator(closePrice, 12);
+final EMAIndicator shortEma = new EMAIndicator(closePrice, 4);
+final CrossedDownIndicatorRule exit = new CrossedDownIndicatorRule(shortEma, longEma);
+final CrossedUpIndicatorRule entry = new CrossedUpIndicatorRule(shortEma, longEma);
 
-        chartBuilder.addIndicator(volume, PlotType.SUBPLOT, ChartType.BAR);
-        chartBuilder.addIndicator(parabolicSar, PlotType.OVERLAY, ChartType.LINE);
-        chartBuilder.addIndicator(longEma, PlotType.SUBPLOT, ChartType.LINE);
-        chartBuilder.addIndicator(shortEma); // default: PlotType.OVERLAY, ChartType.LINE
-        chartBuilder.addIndicator(returns, PlotType.SUBPLOT); // default: ChartType.LINE
-        chartBuilder.setTradingRecord(tradingRecord);
+final Strategy strategy = new BaseStrategy(entry, exit);
+final TradingRecord tradingRecord = new BarSeriesManager(barSeries).run(strategy);
 
-        // 3 Create JFrame
-        javax.swing.SwingUtilities.invokeLater(() -> {
-            final JFrame frame = new JFrame("Ta4j charting");
-            frame.setLayout(new BorderLayout());
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    
-            // 4 add the plot to a JFrame
-            frame.add(chartBuilder.createPlot());
-            frame.pack();
-            frame.setVisible(true);
-        });
+final Returns returns = new Returns(barSeries, tradingRecord, Returns.ReturnType.ARITHMETIC);
+
+// 2 Use the ChartBuilder to create a plot with barSeries, indicators and trading record
+TacChartBuilder.of(barSeries)
+    .withIndicator(
+        of(shortEma)
+            .name("Short Ema")
+            .color(Color.BLUE)) // default: ChartType.LINE, PlotType.OVERLAY
+    .withIndicator(
+        of(volume)
+            .name("Volume")
+            .plotType(PlotType.SUBPLOT)
+            .chartType(ChartType.BAR)
+            .color(Color.BLUE))
+    withIndicator(
+        of(parabolicSar)  // default name = toString()
+            .plotType(PlotType.OVERLAY)
+            .chartType(ChartType.LINE)
+            .color(Color.MAGENTA))
+    .withIndicator(
+        of(longEma)
+            .name("Long Ema")
+            .plotType(PlotType.SUBPLOT)
+            .chartType(ChartType.LINE)) // random color
+    .withIndicator(
+        of(returns)
+            .name("Returns")
+            .plotType(PlotType.SUBPLOT)
+            .color(Color.BLACK)) // default: ChartType.LINE
+    .withTradingRecord(tradingRecord)
+    .buildAndShow(); // Creates and displays the JPanel in a JFrame
 ```
 ![Example picture](repo/example1.png)

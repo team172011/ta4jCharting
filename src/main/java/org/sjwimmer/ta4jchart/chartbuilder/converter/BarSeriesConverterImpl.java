@@ -9,7 +9,11 @@ import java.util.Date;
 public class BarSeriesConverterImpl implements BarSeriesConverter {
 
 	@Override
-	public DefaultHighLowDataset apply(BarSeries barSeries) {
+	public DefaultHighLowDataset convert(BarSeries barSeries) {
+		return convert(barSeries, barSeries.getName());
+	}
+	@Override
+	public DefaultHighLowDataset convert(BarSeries barSeries, String name) {
 		if(barSeries.getBarCount() < 1){
 			throw new IllegalArgumentException("Bar series needs at least two bars");
 		}
@@ -36,13 +40,7 @@ public class BarSeriesConverterImpl implements BarSeriesConverter {
 
 		}
 
-		DefaultHighLowDataset tacOHLCDataset = new DefaultHighLowDataset(barSeries.getName(), dates, highs, lows, opens, closes, volumes);
+		DefaultHighLowDataset tacOHLCDataset = new DefaultHighLowDataset(name, dates, highs, lows, opens, closes, volumes);
 		return tacOHLCDataset;
 	}
-
-	@Override
-	public String getName(BarSeries element) {
-		return element.getName();
-	}
-
 }

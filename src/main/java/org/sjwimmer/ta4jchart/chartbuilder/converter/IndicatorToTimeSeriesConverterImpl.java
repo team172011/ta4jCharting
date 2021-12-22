@@ -13,13 +13,15 @@ import java.util.Date;
 public class IndicatorToTimeSeriesConverterImpl implements IndicatorToTimeSeriesConverter {
 
 	@Override
-	public TimeSeriesCollection apply(Indicator<Num> indicator) {
+	public TimeSeriesCollection convert(Indicator<?> indicator, String name) {
 		final TimeSeriesCollection collection = new TimeSeriesCollection();
-		final TimeSeries timeSeries = new TimeSeries(this.getName(indicator));
+		final TimeSeries timeSeries = new TimeSeries(name);
 		final BarSeries barSeries = indicator.getBarSeries();
 		for(int i = barSeries.getBeginIndex(); i <= barSeries.getEndIndex(); i++) {
 			final Bar bar = barSeries.getBar(i);
-			timeSeries.add(new Second(new Date(bar.getEndTime().toEpochSecond() * 1000)), indicator.getValue(i).doubleValue());
+			final double value = extractDoubleValue(indicator, i);
+			final Second time = new Second(new Date(bar.getEndTime().toEpochSecond() * 1000));
+			timeSeries.add(time, value);
 		}
 		collection.addSeries(timeSeries);
 		return collection;

@@ -40,4 +40,8 @@ public class TradingRecordPanel extends JPanel {
     public void setTradingRecord(TradingRecord tradingRecord) {
         buildPanel(tradingRecord);
     }
+
+    public TacTradingRecordTradeTable getTacTradingRecordTradeTable() {
+        return tacTradingRecordTradeTable;
+    }
 }

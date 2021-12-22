@@ -9,19 +9,19 @@ import org.ta4j.core.num.Num;
 public class IndicatorToBarDataConverterImpl implements IndicatorToBarDataConverter {
 
 	@Override
-	public TacBarDataset apply(Indicator<Num> numIndicator) {
+	public TacBarDataset convert(Indicator<?> numIndicator, String name) {
 		final BarSeries barSeries = numIndicator.getBarSeries();
 		if(barSeries.getBarCount() < 2) {
 			throw new IllegalArgumentException("Bar series must have at least two entries!");
 		}
 		final int nbBars = barSeries.getBarCount();
-		final XYSeries volumeSeries = new XYSeries(getName(numIndicator));
+		final XYSeries volumeSeries = new XYSeries(name);
 		long minTimeDiff = Long.MAX_VALUE;
 
 		for (int i = 0; i < nbBars; i++) {
 			final Bar currentBar = barSeries.getBar(i);
 			final long milliseconds = getMilliseconds(currentBar);
-			final double value = numIndicator.getValue(i).doubleValue();
+			final double value = extractDoubleValue(numIndicator, i);
 			volumeSeries.add(milliseconds, value);
 
 			if(i > 0) {
