@@ -202,7 +202,7 @@ public class TacChartBuilder {
 				mainPlot.addDomainMarker(in);
 
 				ValueMarker out = new ValueMarker(exit);
-				out.setLabel("" + profit);
+				out.setLabel(""); // profit
 				out.setLabelPaint(Color.BLACK);
 				out.setLabelFont(labelFont);
 				out.setLabelBackgroundColor(new Color(profitColor.getRed(), profitColor.getGreen(), profitColor.getBlue(), 200));
@@ -214,21 +214,17 @@ public class TacChartBuilder {
 				IntervalMarker imarker = new IntervalMarker(entry, exit, profitColor);
 				imarker.setAlpha(0.1f);
 
-				/*
+
 				IntervalMarker imarkerText = new IntervalMarker(entry, exit, new Color(0,0,0,0));
 				imarkerText.setLabelFont(labelFont);
-				imarkerText.setLabel(String.format("%s: %.2f %s: %.2f",
-						trade.getEntry().getType().toString(),
-						entryBar.getClosePrice().doubleValue(),
-						trade.getExit().getType().toString(),
-						exitBar.getClosePrice().doubleValue()));
-				imarkerText.setLabelPaint(Color.BLACK);
-				imarkerText.setLabelBackgroundColor(new Color(0,0,0,0));
-				imarkerText.setLabelAnchor(RectangleAnchor.TOP);
-				imarkerText.setLabelTextAnchor(TextAnchor.TOP_CENTER);
+				imarkerText.setLabel(profit+"");
+				imarkerText.setLabelPaint(markerColor);
+				imarkerText.setLabelBackgroundColor(new Color(profitColor.getRed(), profitColor.getGreen(), profitColor.getBlue(), 200));
+				imarkerText.setLabelAnchor(RectangleAnchor.BOTTOM);
+				imarkerText.setLabelTextAnchor(TextAnchor.BOTTOM_CENTER);
 
 				mainPlot.addDomainMarker(imarkerText);
-				*/
+
 				mainPlot.addDomainMarker(imarker, Layer.BACKGROUND);
 			}
 		} else{

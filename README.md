@@ -1,6 +1,6 @@
 [![Test develop](https://github.com/team172011/ta4jCharting/actions/workflows/test-action-master.yml/badge.svg?branch=master&event=push)](https://github.com/team172011/ta4jCharting/actions/workflows/test-action-master.yml) [![Test develop](https://github.com/team172011/ta4jCharting/actions/workflows/test-action-develop.yml/badge.svg?branch=develop&event=push)](https://github.com/team172011/ta4jCharting/actions/workflows/test-action-develop.yml)
 # Ta4jCharting
-A simple charting application for [ta4j](https://github.com/ta4j/ta4j).
+A simple charting application for [ta4j](https://github.com/ta4j/ta4j) using Swing and [jfreechart](https://github.com/jfree/jfreechart).
 
 ## Project structure
 This project is a simple maven project with a parent pom and two modules for the ta4j-charting library and the example project
@@ -37,6 +37,14 @@ After building the example application the example can be started by executing:
 ```
 
 ## How to use
+### Quick start
+```java
+final BarSeries barSeries = loadAppleIncSeries(); // create a ta4j bar series
+TacChartBuilder.of(barSeries)
+        .buildAndShow("AAPL");
+```
+![Example picture](repo/example2.png)
+### Build a chart with custom indicators and a trading record
 ```java
 // 1 Create a barSeries, indicators and run your strategy with ta4j
 final BarSeries barSeries = loadAppleIncSeries();
