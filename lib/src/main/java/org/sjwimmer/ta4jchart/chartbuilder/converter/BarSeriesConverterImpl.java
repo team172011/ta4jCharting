@@ -40,7 +40,6 @@ public class BarSeriesConverterImpl implements BarSeriesConverter {
 
 		}
 
-		DefaultHighLowDataset tacOHLCDataset = new DefaultHighLowDataset(name, dates, highs, lows, opens, closes, volumes);
-		return tacOHLCDataset;
+		return new DefaultHighLowDataset(name, dates, highs, lows, opens, closes, volumes);
 	}
 }
