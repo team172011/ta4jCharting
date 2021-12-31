@@ -1,8 +1,6 @@
-/target
+*/target
 /.settings
 .project
 .classpath
 ta4j-charting.iml
 .DS_Store
-.idea
-.iml
