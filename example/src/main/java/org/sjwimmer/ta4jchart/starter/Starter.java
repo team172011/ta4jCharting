@@ -25,7 +25,7 @@ import static org.sjwimmer.ta4jchart.chartbuilder.IndicatorConfiguration.Builder
 public class Starter {
 
 	public static void main(String[] args) {
-		
+
 		// 1 Create a barSeries, indicators and run your strategy with ta4j
 		final BarSeries barSeries = loadAppleIncSeries();
 		final VolumeIndicator volume = new VolumeIndicator(barSeries);
