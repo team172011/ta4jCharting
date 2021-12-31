@@ -4,3 +4,6 @@
 .classpath
 ta4j-charting.iml
 .DS_Store
+.idea
+.iml
+*/*.iml
