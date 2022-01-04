@@ -1,6 +1,9 @@
 package org.sjwimmer.ta4jchart.starter;
 
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatLightLaf;
 import org.sjwimmer.ta4jchart.chartbuilder.*;
+import org.sjwimmer.ta4jchart.chartbuilder.renderer.Theme;
 import org.ta4j.core.*;
 import org.ta4j.core.analysis.Returns;
 import org.ta4j.core.indicators.EMAIndicator;
@@ -10,6 +13,10 @@ import org.ta4j.core.indicators.helpers.VolumeIndicator;
 import org.ta4j.core.rules.CrossedDownIndicatorRule;
 import org.ta4j.core.rules.CrossedUpIndicatorRule;
 
+import javax.swing.*;
+import javax.swing.plaf.ColorUIResource;
+import javax.swing.plaf.metal.DefaultMetalTheme;
+import javax.swing.plaf.metal.MetalLookAndFeel;
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -25,7 +32,6 @@ import static org.sjwimmer.ta4jchart.chartbuilder.IndicatorConfiguration.Builder
 public class Starter {
 
 	public static void main(String[] args) {
-
 		// 1 Create a barSeries, indicators and run your strategy with ta4j
 		final BarSeries barSeries = loadAppleIncSeries();
 		final VolumeIndicator volume = new VolumeIndicator(barSeries);
@@ -42,8 +48,8 @@ public class Starter {
 		final Returns returns = new Returns(barSeries, tradingRecord, Returns.ReturnType.ARITHMETIC);
 
 		// 2 Use the ChartBuilder to create a plot with barSeries, indicators and trading record
-		TacChartBuilder.of(barSeries)
-				.withIndicator(
+		TacChartBuilder.of(barSeries, Theme.DARK)
+/*				.withIndicator(
 						of(shortEma)
 								.name("Short Ema")
 								.color(Color.BLUE)) // default: ChartType.LINE, PlotType.OVERLAY
@@ -69,7 +75,7 @@ public class Starter {
 								.plotType(PlotType.SUBPLOT)
 								.color(Color.BLACK) // default: ChartType.LINE
 								.notInTable()) // do not show entries in data table
-				.withTradingRecord(tradingRecord)
+				.withTradingRecord(tradingRecord)*/
 				.buildAndShow(); // Creates and displays the JPanel in a JFrame
 	}
 
@@ -105,4 +111,40 @@ public class Starter {
 		}
 		return null;
     }
+
+	public static DefaultMetalTheme DarkMetalTheme = new DefaultMetalTheme(){
+		//Wichtig
+		public ColorUIResource getWindowTitleInactiveBackground() {
+			return new ColorUIResource(java.awt.Color.GRAY);
+		}
+
+		//Wichtig:
+		public ColorUIResource getWindowTitleBackground() {
+			return new ColorUIResource(java.awt.Color.YELLOW);
+		}
+
+		public ColorUIResource getPrimaryControlHighlight() {
+			return new ColorUIResource(java.awt.Color.BLACK);
+		}
+
+		public ColorUIResource getPrimaryControlDarkShadow() {
+			return new ColorUIResource(java.awt.Color.LIGHT_GRAY);
+		}
+
+		public ColorUIResource getPrimaryControl() {
+			return new ColorUIResource(java.awt.Color.GRAY);
+		}
+
+		public ColorUIResource getControlHighlight() {
+			return new ColorUIResource(java.awt.Color.BLACK);
+		}
+
+		public ColorUIResource getControlDarkShadow() {
+			return new ColorUIResource(java.awt.Color.BLACK);
+		}
+
+		public ColorUIResource getControl() {
+			return new ColorUIResource(java.awt.Color.DARK_GRAY);
+		}
+	};
 }
