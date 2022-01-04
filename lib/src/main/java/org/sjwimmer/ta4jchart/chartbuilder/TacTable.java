@@ -34,9 +34,8 @@ public interface TacTable {
 
     static void setLabelStyle(int row, boolean isSelected, JLabel jLabel) {
         if(!isSelected && row % 2 == 0) {
+            jLabel.setBackground(jLabel.getBackground().darker());
             jLabel.setOpaque(true);
-            jLabel.setBackground(Color.lightGray);
-            jLabel.setForeground(Color.BLACK);
         } else if(isSelected) {
             jLabel.setBackground(Color.BLUE);
             jLabel.setOpaque(true);

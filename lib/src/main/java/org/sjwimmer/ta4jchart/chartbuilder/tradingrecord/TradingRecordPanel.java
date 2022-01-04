@@ -1,5 +1,6 @@
 package org.sjwimmer.ta4jchart.chartbuilder.tradingrecord;
 
+import org.ta4j.core.BaseTradingRecord;
 import org.ta4j.core.Position;
 import org.ta4j.core.TradingRecord;
 
@@ -8,17 +9,14 @@ import java.awt.*;
 
 public class TradingRecordPanel extends JPanel {
 
-    private final TacTradingRecordTradeTable tacTradingRecordTradeTable = new TacTradingRecordTradeTable();
+    private TacTradingRecordTradeTable tacTradingRecordTradeTable;
 
-    public TradingRecordPanel() {
+    public TradingRecordPanel(TradingRecord tradingRecord) {
+        super();
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-    }
-
-    private void buildPanel(TradingRecord tradingRecord) {
+        setBackground(UIManager.getColor("Button.background"));
         add(createPositionsView(tradingRecord));
-        add(new JSeparator());
         add(new JScrollPane(tacTradingRecordTradeTable));
-        add(new JSeparator());
     }
 
     private Component createPositionsView(TradingRecord tradingRecord) {
@@ -28,17 +26,18 @@ public class TradingRecordPanel extends JPanel {
             if(!e.getValueIsAdjusting()) {
                 final int selectedRow = tacTradingRecordPositionTable.getSelectedRow();
                 final Position position = tradingRecord.getPositions().get(selectedRow);
-                tacTradingRecordTradeTable.setModel(new TacTradingRecordTradeTableModel(position));
+                final TacTradingRecordTradeTableModel tacTradingRecordTradeTableModel = new TacTradingRecordTradeTableModel(position);
+                if(this.tacTradingRecordTradeTable == null) {
+                    this.tacTradingRecordTradeTable = new TacTradingRecordTradeTable(tacTradingRecordTradeTableModel);
+                } else {
+                    this.tacTradingRecordTradeTable.setModel(tacTradingRecordTradeTableModel);
+                }
             }
         });
-
-        tacTradingRecordPositionTable.setRowSelectionInterval(0,0);
+        if(tradingRecord.getPositionCount() > 0) {
+            tacTradingRecordPositionTable.setRowSelectionInterval(0,0);
+        }
         return new JScrollPane(tacTradingRecordPositionTable);
-    }
-
-
-    public void setTradingRecord(TradingRecord tradingRecord) {
-        buildPanel(tradingRecord);
     }
 
     public TacTradingRecordTradeTable getTacTradingRecordTradeTable() {

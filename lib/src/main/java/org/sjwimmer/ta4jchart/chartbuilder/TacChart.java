@@ -17,6 +17,7 @@ public class TacChart extends JPanel {
     public TacChart(JFreeChart chart, TacDataTableModel tacDataTableModel, JPanel tradingRecordPanel) {
         super(new BorderLayout());
         ChartPanel chartPanel = new ChartPanel(chart);
+
         JToolBar toolBar = new JToolBar("Action");
         add(toolBar, BorderLayout.NORTH);
         add(new JScrollPane(chartPanel), BorderLayout.CENTER);

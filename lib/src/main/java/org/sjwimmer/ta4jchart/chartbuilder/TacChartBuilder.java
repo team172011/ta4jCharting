@@ -1,8 +1,6 @@
 package org.sjwimmer.ta4jchart.chartbuilder;
 
-import org.sjwimmer.ta4jchart.chartbuilder.renderer.StandardTacChartTheme;
-import org.sjwimmer.ta4jchart.chartbuilder.renderer.TacBarRenderer;
-import org.sjwimmer.ta4jchart.chartbuilder.renderer.TacCandlestickRenderer;
+import org.sjwimmer.ta4jchart.chartbuilder.renderer.*;
 import org.sjwimmer.ta4jchart.chartbuilder.tradingrecord.TradingRecordPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
@@ -26,12 +24,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
 
 public class TacChartBuilder {
 
 	private final static Logger log = LoggerFactory.getLogger(TacChartBuilder.class);
-	private final StandardTacChartTheme theme = new StandardTacChartTheme();
+	private final TacChartTheme theme;
 	private final BarSeries barSeries;
 	private final BarSeriesConverter barSeriesConverter;
 	private final IndicatorToTimeSeriesConverter indicatorToTimeSeriesConverter;
@@ -39,20 +36,28 @@ public class TacChartBuilder {
 	private final JFreeChart chart;
 
 	private final TacDataTableModel dataTableModel = new TacDataTableModel();
-	private final TradingRecordPanel tradingRecordPanel = new TradingRecordPanel();
-
 
 	private int overlayIds = 2; // 0 = ohlcv data, 1 = volume data
+	private TradingRecordPanel tradingRecordPanel;
 
 	public static TacChartBuilder of(BarSeries barSeries) {
-		return new TacChartBuilder(barSeries);
+		return of(barSeries, Theme.LIGHT);
 	}
 
-	private TacChartBuilder(BarSeries barSeries) {
-		this(barSeries, new BarSeriesConverterImpl(), new IndicatorToTimeSeriesConverterImpl(), new IndicatorToBarDataConverterImpl());
+	public static TacChartBuilder of(BarSeries barSeries, Theme theme) {
+		return new TacChartBuilder(barSeries, theme);
+	}
+
+	private TacChartBuilder(BarSeries barSeries, Theme theme) {
+		this(barSeries, new BarSeriesConverterImpl(), new IndicatorToTimeSeriesConverterImpl(), new IndicatorToBarDataConverterImpl(), theme);
 	}
 	
-	private TacChartBuilder(BarSeries barSeries, BarSeriesConverter barseriesPlotter, IndicatorToTimeSeriesConverter indicatorConverter, IndicatorToBarDataConverter indicatorToBarDataConverter) {
+	private TacChartBuilder(BarSeries barSeries, BarSeriesConverter barseriesPlotter, IndicatorToTimeSeriesConverter indicatorConverter, IndicatorToBarDataConverter indicatorToBarDataConverter, Theme theme) {
+		if(theme == Theme.DARK) {
+			this.theme = new DarkTacChartTheme();
+		} else {
+			this.theme = new LightTacChartTheme();
+		}
 		this.barSeriesConverter = barseriesPlotter;
 		this.indicatorToTimeSeriesConverter = indicatorConverter;
 		this.indicatorToBarDataConverter = indicatorToBarDataConverter;
@@ -75,7 +80,7 @@ public class TacChartBuilder {
 		final TacCandlestickRenderer candlestickRenderer = new TacCandlestickRenderer();
 		final DefaultHighLowDataset barSeriesData = this.barSeriesConverter.convert(series);
 		final XYPlot plot = new XYPlot(barSeriesData, null, valueAxis, candlestickRenderer);
-
+		setPlotTheme(plot);
 		final CombinedDomainXYPlot combinedDomainPlot = new CombinedDomainXYPlot(timeAxis);
 
 		combinedDomainPlot.add(plot,10);
@@ -86,7 +91,6 @@ public class TacChartBuilder {
 
 		final JFreeChart chart = new JFreeChart(seriesName, JFreeChart.DEFAULT_TITLE_FONT,
 				combinedDomainPlot, true);
-
 		theme.apply(chart);
 		dataTableModel.addEntries(barSeriesData);
 		return chart;
@@ -112,7 +116,7 @@ public class TacChartBuilder {
 				final TimeSeriesCollection timeSeriesCollection = this.indicatorToTimeSeriesConverter.convert(indicator, name);
 				final XYLineAndShapeRenderer renderer = createLineRenderer(indicatorConfiguration);
 				final XYPlot candlestickPlot = (XYPlot) combinedDomainPlot.getSubplots().get(0);
-
+				setPlotTheme(candlestickPlot);
 				candlestickPlot.setRenderer(counter, renderer);
 				candlestickPlot.setDataset(counter, timeSeriesCollection);
 				if (inDataTable) {
@@ -123,7 +127,7 @@ public class TacChartBuilder {
 				final TacBarDataset barDataset = indicatorToBarDataConverter.convert(indicator, name);
 				final TacBarRenderer barRenderer = createBarRenderer(indicatorConfiguration);
 				final XYPlot candlestickPlot = (XYPlot) combinedDomainPlot.getSubplots().get(0);
-
+				setPlotTheme(candlestickPlot);
 				candlestickPlot.setRenderer(counter, barRenderer);
 				candlestickPlot.setDataset(counter, barDataset);
 				if(inDataTable) {
@@ -136,7 +140,7 @@ public class TacChartBuilder {
 				final NumberAxis valueAxis = new NumberAxis(name);
 				final TacBarRenderer barRenderer = createBarRenderer(indicatorConfiguration);
 				final XYPlot barPlot = new XYPlot(barDataset, null, valueAxis, barRenderer);
-
+				setPlotTheme(barPlot);
 				valueAxis.setLabel("");
 				combinedDomainPlot.add(barPlot, 1);
 				if (inDataTable) {
@@ -147,7 +151,7 @@ public class TacChartBuilder {
 				final XYLineAndShapeRenderer renderer = createLineRenderer(indicatorConfiguration);
 				final NumberAxis valueAxis = new NumberAxis(name);
 				final XYPlot linePlot = new XYPlot(timeSeriesCollection, null, valueAxis, renderer);
-
+				setPlotTheme(linePlot);
 				valueAxis.setLabel("");
 				valueAxis.setAutoRangeIncludesZero(false);
 				if (inDataTable) {
@@ -157,6 +161,19 @@ public class TacChartBuilder {
 			}
 		}
 		return this;
+	}
+
+	private void setPlotTheme(XYPlot plot) {
+		final Color labelColor = UIManager.getColor("Label.foreground");
+		plot.setBackgroundPaint(UIManager.getColor("Panel.background"));
+		if(plot.getRangeAxis() != null) {
+			plot.getRangeAxis().setTickLabelPaint(labelColor);
+			plot.getRangeAxis().setLabelPaint(labelColor);
+		}
+		if(plot.getDomainAxis() != null) {
+			plot.getDomainAxis().setTickLabelPaint(labelColor);
+			plot.getDomainAxis().setLabelPaint(labelColor);
+		}
 	}
 
 	private TacBarRenderer createBarRenderer(IndicatorConfiguration<?> indicatorConfiguration) {
@@ -172,7 +189,7 @@ public class TacChartBuilder {
 
 
 	public TacChartBuilder withTradingRecord(TradingRecord tradingRecord) {
-		tradingRecordPanel.setTradingRecord(tradingRecord);
+		this.tradingRecordPanel = new TradingRecordPanel(tradingRecord);
 		if(tradingRecord.getLastExit() != null){
 			final XYPlot mainPlot = ((XYPlot)((CombinedDomainXYPlot) chart.getPlot()).getSubplots().get(0));
 			final java.util.List<Position> trades = tradingRecord.getPositions();
