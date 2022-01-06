@@ -1,7 +1,7 @@
 [![Test develop](https://github.com/team172011/ta4jCharting/actions/workflows/test-action-master.yml/badge.svg?branch=master&event=push)](https://github.com/team172011/ta4jCharting/actions/workflows/test-action-master.yml) [![Test develop](https://github.com/team172011/ta4jCharting/actions/workflows/test-action-develop.yml/badge.svg?branch=develop&event=push)](https://github.com/team172011/ta4jCharting/actions/workflows/test-action-develop.yml)
 # Ta4jCharting
 A simple charting application for [ta4j](https://github.com/ta4j/ta4j) using Swing and [jfreechart](https://github.com/jfree/jfreechart).
-![Example picture](repo/example3.png)
+
 ## Project structure
 This project is a simple maven project with a parent pom and two modules for the ta4j-charting library and the example project
 ```text
@@ -92,8 +92,3 @@ TacChartBuilder.of(barSeries)
     .buildAndShow(); // Creates and displays the JPanel in a JFrame
 ```
 ![Example picture](repo/example1.png)
-You can also use a dark theme:
-```
-TacChartBuilder.of(barSeries, Theme.DARK).buildAndShow();
-```
-![Example picture](repo/example4_dark.png)
