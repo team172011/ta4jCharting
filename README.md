@@ -1,4 +1,6 @@
 [![Test develop](https://github.com/team172011/ta4jCharting/actions/workflows/test-action-master.yml/badge.svg?branch=master&event=push)](https://github.com/team172011/ta4jCharting/actions/workflows/test-action-master.yml) [![Test develop](https://github.com/team172011/ta4jCharting/actions/workflows/test-action-develop.yml/badge.svg?branch=develop&event=push)](https://github.com/team172011/ta4jCharting/actions/workflows/test-action-develop.yml)
+<a href="https://buymeacoffee.com/simonjwimmer" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="25" width="100"></a>
+
 # Ta4jCharting
 A simple charting application for [ta4j](https://github.com/ta4j/ta4j) using Swing and [jfreechart](https://github.com/jfree/jfreechart).
 
@@ -92,3 +94,10 @@ TacChartBuilder.of(barSeries)
     .buildAndShow(); // Creates and displays the JPanel in a JFrame
 ```
 ![Example picture](repo/example1.png)
+
+
+You can also use a dark theme:
+```
+TacChartBuilder.of(barSeries, Theme.DARK).buildAndShow();
+```
+![Example picture](repo/example4_dark.png)
