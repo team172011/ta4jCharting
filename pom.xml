@@ -49,4 +49,12 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+
+	<distributionManagement>
+		<repository>
+			<id>github</id>
+			<name>GitHub OWNER Apache Maven Packages</name>
+			<url>https://maven.pkg.github.com/team172011/ta4jCharting</url>
+		</repository>
+	</distributionManagement>
 </project>
