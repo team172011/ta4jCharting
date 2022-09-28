@@ -1,10 +1,9 @@
 package org.sjwimmer.ta4jchart.chartbuilder.converter;
 
-import org.jfree.data.xy.IntervalXYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
-public class TacBarDataset extends XYSeriesCollection implements IntervalXYDataset {
+public class TacBarDataset extends XYSeriesCollection {
 
     private final double barSize;
     private double padding = 0.1;

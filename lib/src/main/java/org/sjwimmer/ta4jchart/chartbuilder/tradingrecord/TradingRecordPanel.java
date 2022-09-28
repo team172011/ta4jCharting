@@ -1,6 +1,5 @@
 package org.sjwimmer.ta4jchart.chartbuilder.tradingrecord;
 
-import org.ta4j.core.BaseTradingRecord;
 import org.ta4j.core.Position;
 import org.ta4j.core.TradingRecord;
 

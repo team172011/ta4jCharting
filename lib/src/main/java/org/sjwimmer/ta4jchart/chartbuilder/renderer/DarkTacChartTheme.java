@@ -1,19 +1,13 @@
 package org.sjwimmer.ta4jchart.chartbuilder.renderer;
 
-import com.formdev.flatlaf.FlatDarculaLaf;
-import com.formdev.flatlaf.FlatDarkLaf;
-import com.formdev.flatlaf.FlatLightLaf;
+import static org.jfree.chart.StandardChartTheme.createDarknessTheme;
+
+import javax.swing.UIManager;
+
 import org.jfree.chart.ChartTheme;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.StandardChartTheme;
-import org.jfree.chart.plot.CombinedDomainXYPlot;
-import org.jfree.chart.plot.XYPlot;
 
-import javax.swing.*;
-
-import java.awt.*;
-
-import static org.jfree.chart.StandardChartTheme.createDarknessTheme;
+import com.formdev.flatlaf.FlatDarculaLaf;
 
 public class DarkTacChartTheme implements TacChartTheme {
 

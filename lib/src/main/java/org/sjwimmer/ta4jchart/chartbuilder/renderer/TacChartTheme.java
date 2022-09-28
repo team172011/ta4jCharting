@@ -1,16 +1,13 @@
 package org.sjwimmer.ta4jchart.chartbuilder.renderer;
 
+import java.awt.Color;
+
+import javax.swing.UIManager;
+
 import org.jfree.chart.ChartTheme;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.event.PlotChangeEvent;
-import org.jfree.chart.event.PlotChangeListener;
 import org.jfree.chart.plot.CombinedDomainXYPlot;
-import org.jfree.chart.plot.Plot;
 import org.jfree.chart.plot.XYPlot;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.geom.Ellipse2D;
 
 public interface TacChartTheme extends ChartTheme {
 

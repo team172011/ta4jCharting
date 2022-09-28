@@ -1,23 +1,5 @@
 package org.sjwimmer.ta4jchart.starter;
 
-import com.formdev.flatlaf.FlatDarkLaf;
-import com.formdev.flatlaf.FlatLightLaf;
-import org.sjwimmer.ta4jchart.chartbuilder.*;
-import org.sjwimmer.ta4jchart.chartbuilder.renderer.Theme;
-import org.ta4j.core.*;
-import org.ta4j.core.analysis.Returns;
-import org.ta4j.core.indicators.EMAIndicator;
-import org.ta4j.core.indicators.ParabolicSarIndicator;
-import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
-import org.ta4j.core.indicators.helpers.VolumeIndicator;
-import org.ta4j.core.rules.CrossedDownIndicatorRule;
-import org.ta4j.core.rules.CrossedUpIndicatorRule;
-
-import javax.swing.*;
-import javax.swing.plaf.ColorUIResource;
-import javax.swing.plaf.metal.DefaultMetalTheme;
-import javax.swing.plaf.metal.MetalLookAndFeel;
-import java.awt.*;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -27,7 +9,30 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
-import static org.sjwimmer.ta4jchart.chartbuilder.IndicatorConfiguration.Builder.*;
+import javax.swing.plaf.ColorUIResource;
+import javax.swing.plaf.metal.DefaultMetalTheme;
+
+import java.awt.Color;
+
+import org.sjwimmer.ta4jchart.chartbuilder.ChartType;
+import org.sjwimmer.ta4jchart.chartbuilder.PlotType;
+import org.sjwimmer.ta4jchart.chartbuilder.TacChartBuilder;
+import org.sjwimmer.ta4jchart.chartbuilder.renderer.Theme;
+import org.ta4j.core.BarSeries;
+import org.ta4j.core.BarSeriesManager;
+import org.ta4j.core.BaseBarSeries;
+import org.ta4j.core.BaseStrategy;
+import org.ta4j.core.Strategy;
+import org.ta4j.core.TradingRecord;
+import org.ta4j.core.analysis.Returns;
+import org.ta4j.core.indicators.EMAIndicator;
+import org.ta4j.core.indicators.ParabolicSarIndicator;
+import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
+import org.ta4j.core.indicators.helpers.VolumeIndicator;
+import org.ta4j.core.rules.CrossedDownIndicatorRule;
+import org.ta4j.core.rules.CrossedUpIndicatorRule;
+
+import static org.sjwimmer.ta4jchart.chartbuilder.IndicatorConfiguration.Builder.of;
 
 public class Starter {
 
@@ -49,7 +54,7 @@ public class Starter {
 
 		// 2 Use the ChartBuilder to create a plot with barSeries, indicators and trading record
 		TacChartBuilder.of(barSeries, Theme.DARK)
-/*				.withIndicator(
+				.withIndicator(
 						of(shortEma)
 								.name("Short Ema")
 								.color(Color.BLUE)) // default: ChartType.LINE, PlotType.OVERLAY
@@ -75,7 +80,7 @@ public class Starter {
 								.plotType(PlotType.SUBPLOT)
 								.color(Color.BLACK) // default: ChartType.LINE
 								.notInTable()) // do not show entries in data table
-				.withTradingRecord(tradingRecord)*/
+				.withTradingRecord(tradingRecord)
 				.buildAndShow(); // Creates and displays the JPanel in a JFrame
 	}
 

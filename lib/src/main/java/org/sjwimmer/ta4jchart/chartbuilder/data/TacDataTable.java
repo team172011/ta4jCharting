@@ -1,19 +1,17 @@
 package org.sjwimmer.ta4jchart.chartbuilder.data;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.sjwimmer.ta4jchart.chartbuilder.TacTable;
-
-import javax.swing.*;
-import javax.swing.table.TableCellRenderer;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.JTable;
+import javax.swing.table.TableCellRenderer;
+
+import org.sjwimmer.ta4jchart.chartbuilder.TacTable;
+
 public class TacDataTable extends JTable implements TacTable {
 
-    private final static Logger log = LogManager.getLogger(TacDataTable.class);
     private final Map<Class<?>, TableCellRenderer> rendererMap = new HashMap<>();
 
     {
