@@ -53,7 +53,7 @@ public class Starter {
 		final Returns returns = new Returns(barSeries, tradingRecord, Returns.ReturnType.ARITHMETIC);
 
 		// 2 Use the ChartBuilder to create a plot with barSeries, indicators and trading record
-		TacChartBuilder.of(barSeries, Theme.DARK)
+		TacChartBuilder.of(barSeries, Theme.LIGHT)
 				.withIndicator(
 						of(shortEma)
 								.name("Short Ema")
