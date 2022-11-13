@@ -26,8 +26,8 @@ jobs:
           server-id: central
           server-username: ${{ secrets.MAVEN_USER }}
           server-password: ${{ secrets.MAVEN_PASSWORD }}
-          gpg-private-key: ${{ secrets.JRELEASER_GPG_SECRET_KEY }}
-          gpg-passphrase: ${{ secrets.JRELEASER_GPG_PASSPHRASE }}
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
 
       # Post JARs to Maven Central
 
