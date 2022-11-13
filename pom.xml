@@ -5,7 +5,7 @@
 	<groupId>de.sjwimmer.ta4j-charting</groupId>
 	<artifactId>ta4j-charting-parent</artifactId>
 	<packaging>pom</packaging>
-	<version>0.1</version>
+	<version>0.1-SNAPSHOT</version>
 	<name>ta4j-charting-parent</name>
 	<description>Simple charting application for the ta4j library</description>
 	<url>http://github.com/team172011/ta4jCharting</url>
