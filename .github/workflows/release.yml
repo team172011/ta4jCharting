@@ -24,8 +24,10 @@ jobs:
           java-version: 11
           distribution: 'zulu'
           server-id: central
+          server-username: ${{ secrets.MAVEN_USER }}
+          server-password: ${{ secrets.MAVEN_PASSWORD }}
           gpg-private-key: ${{ secrets.JRELEASER_GPG_SECRET_KEY }}
-          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+          gpg-passphrase: ${{ secrets.JRELEASER_GPG_PASSPHRASE }}
 
       # Post JARs to Maven Central
 
