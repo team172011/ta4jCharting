@@ -8,7 +8,7 @@
 	<version>0.1-SNAPSHOT</version>
 	<name>ta4j-charting-parent</name>
 	<description>Simple charting application for the ta4j library</description>
-	<url>http://github.com/team172011/ta4jCharting</url>
+	<url>https://github.com/team172011/ta4jCharting</url>
 	<inceptionYear>2022</inceptionYear>
 	<licenses>
 		<license>
@@ -35,9 +35,9 @@
 		<url>https://github.com/team172011/ta4jCharting</url>
 	</issueManagement>
 	<scm>
-		<connection>scm:git:git://github.com/team172022/ta4jCharting.git</connection>
-		<developerConnection>scm:git:git@github.com:team172011/ta4jCharting.git</developerConnection>
-		<url>http://github.com/team172011/ta4jCharting</url>
+		<connection>scm:git:https://github.com/team172011/ta4jCharting.git</connection>
+		<developerConnection>scm:git:https://github.com/team172011/ta4jCharting.git</developerConnection>
+		<url>https://github.com/team172011/ta4jCharting</url>
 		<tag>0.1</tag>
 	</scm>
 	<modules>
