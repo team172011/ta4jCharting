@@ -47,6 +47,8 @@
 	<properties>
 		<maven.compiler.target>11</maven.compiler.target>
 		<maven.compiler.source>11</maven.compiler.source>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
 	<profiles>
 		<profile>
@@ -98,6 +100,7 @@
 												<closeRepository>false</closeRepository>
 												<releaseRepository>false</releaseRepository>
 												<stagingRepositories>target/staging-deploy</stagingRepositories>
+												<applyMavenCentralRules>false</applyMavenCentralRules>
 											</maven-central>
 										</nexus2>
 									</maven>
