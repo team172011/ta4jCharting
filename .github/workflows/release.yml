@@ -24,7 +24,7 @@ jobs:
         with:
           java-version: 11
           distribution: 'zulu'
-          server-id: central
+          server-id: sonatype-nexus-staging
           server-username: ${{ secrets.MAVEN_USER }}
           server-password: ${{ secrets.MAVEN_PASSWORD }}
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
