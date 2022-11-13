@@ -2,27 +2,113 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.sjwimmer.ta4j-charting</groupId>
+	<groupId>de.sjwimmer.ta4j-charting</groupId>
 	<artifactId>ta4j-charting-parent</artifactId>
 	<packaging>pom</packaging>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.1</version>
+	<name>ta4j-charting-parent</name>
+	<description>Simple charting application for the ta4j library</description>
+	<url>http://github.com/team172011/ta4jCharting</url>
+	<inceptionYear>2022</inceptionYear>
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+			<comments>A business-friendly OSS license</comments>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<id>team172022</id>
+			<roles>
+				<role>creator</role>
+				<role>developer</role>
+			</roles>
+			<name>Simon-Justus Wimmer</name>
+			<email>simonjustuswimmer@googlemail.com</email>
+			<url>www.sjwimmer.de</url>
+		</developer>
+	</developers>
+	<issueManagement>
+		<system>GitHub</system>
+		<url>https://github.com/team172011/ta4jCharting</url>
+	</issueManagement>
+	<scm>
+		<connection>scm:git:git://github.com/team172022/ta4jCharting.git</connection>
+		<developerConnection>scm:git:git@github.com:team172011/ta4jCharting.git</developerConnection>
+		<url>http://github.com/team172011/ta4jCharting</url>
+		<tag>0.1</tag>
+	</scm>
 	<modules>
 		<module>lib</module>
 		<module>example</module>
 	</modules>
-	<name>ta4j-charting-parent</name>
-	<description>ta4j-charting</description>
-
 	<properties>
 		<maven.compiler.target>11</maven.compiler.target>
 		<maven.compiler.source>11</maven.compiler.source>
 	</properties>
-	<repositories>
-		<repository>
-			<id>sonatype snapshots</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-		</repository>
-	</repositories>
+	<profiles>
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>3.4.1</version>
+						<executions>
+							<execution>
+								<id>attach-javadoc</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>3.2.1</version>
+						<executions>
+							<execution>
+								<id>attach-source</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.jreleaser</groupId>
+						<artifactId>jreleaser-maven-plugin</artifactId>
+						<version>1.3.1</version>
+						<configuration>
+							<jreleaser>
+								<signing>
+									<active>ALWAYS</active>
+									<armored>true</armored>
+								</signing>
+								<deploy>
+									<maven>
+										<nexus2>
+											<maven-central>
+												<active>ALWAYS</active>
+												<url>https://s01.oss.sonatype.org/service/local</url>;
+												<closeRepository>false</closeRepository>
+												<releaseRepository>false</releaseRepository>
+												<stagingRepositories>target/staging-deploy</stagingRepositories>
+											</maven-central>
+										</nexus2>
+									</maven>
+								</deploy>
+							</jreleaser>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -40,7 +126,7 @@
 			<dependency>
 				<groupId>org.ta4j</groupId>
 				<artifactId>ta4j-core</artifactId>
-				<version>0.16-SNAPSHOT</version>
+				<version>0.15</version>
 			</dependency>
 			<dependency>
 				<groupId>ch.qos.logback</groupId>
@@ -54,7 +140,15 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.kordamp.maven</groupId>
+				<artifactId>pomchecker-maven-plugin</artifactId>
+				<version>1.4.0</version>
+			</plugin>
+		</plugins>
+	</build>
 	<distributionManagement>
 		<repository>
 			<id>github</id>

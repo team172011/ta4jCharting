@@ -14,10 +14,10 @@ import javax.swing.plaf.metal.DefaultMetalTheme;
 
 import java.awt.Color;
 
-import org.sjwimmer.ta4jchart.chartbuilder.ChartType;
-import org.sjwimmer.ta4jchart.chartbuilder.PlotType;
-import org.sjwimmer.ta4jchart.chartbuilder.TacChartBuilder;
-import org.sjwimmer.ta4jchart.chartbuilder.renderer.Theme;
+import de.sjwimmer.ta4jchart.chartbuilder.ChartType;
+import de.sjwimmer.ta4jchart.chartbuilder.PlotType;
+import de.sjwimmer.ta4jchart.chartbuilder.TacChartBuilder;
+import de.sjwimmer.ta4jchart.chartbuilder.renderer.Theme;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.BarSeriesManager;
 import org.ta4j.core.BaseBarSeries;
@@ -32,7 +32,7 @@ import org.ta4j.core.indicators.helpers.VolumeIndicator;
 import org.ta4j.core.rules.CrossedDownIndicatorRule;
 import org.ta4j.core.rules.CrossedUpIndicatorRule;
 
-import static org.sjwimmer.ta4jchart.chartbuilder.IndicatorConfiguration.Builder.of;
+import static de.sjwimmer.ta4jchart.chartbuilder.IndicatorConfiguration.Builder.of;
 
 public class Starter {
 
