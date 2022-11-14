@@ -112,6 +112,7 @@ This project is a simple maven project with a parent pom and two modules for the
     │    ├───pom.xml
     │    └───src
     │         ├───main
+    │         │    └───resources
     │         └───test
     │    
     │
@@ -119,5 +120,6 @@ This project is a simple maven project with a parent pom and two modules for the
          ├───pom.xml
          └───src
              ├───main
-             └───resources
+             │    └───resources
+             └───test
 ```
