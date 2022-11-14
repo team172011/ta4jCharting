@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    name: Deploy
+    name: Deploy Snapshot
     runs-on: ubuntu-latest
 
     steps:
@@ -25,12 +25,9 @@ jobs:
           server-id: sonatype-nexus-snapshots
           server-username: MAVEN_USERNAME
           server-password: MAVEN_CENTRAL_TOKEN
-          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
-          gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
       - name: Deploy to Maven Central
         env:
           MAVEN_USERNAME: ${{ secrets.MAVEN_USER }}
           MAVEN_CENTRAL_TOKEN: ${{ secrets.MAVEN_PASSWORD }}
-          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: mvn -B deploy
