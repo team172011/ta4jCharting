@@ -4,26 +4,26 @@
 # Ta4jCharting
 A simple charting application for [ta4j](https://github.com/ta4j/ta4j) using Swing and [jfreechart](https://github.com/jfree/jfreechart).
 
-## Project structure
-This project is a simple maven project with a parent pom and two modules for the ta4j-charting library and the example project
-```text
-└───ta4j-charting-parent
-    ├───pom.xml
-    ├───README.md
-    └───lib
-    │    ├───pom.xml
-    │    └───src
-    │         ├───main
-    │         └───test
-    │    
-    │
-    └───example
-         ├───pom.xml
-         └───src
-             ├───main
-             └───resources
+## Maven artifacts and SNAPSHOTS
+
+You can get the latest release of this library by adding the following maven dependency:
+```xml
+<dependency>
+  <groupId>de.sjwimmer.ta4j-charting</groupId>
+  <artifactId>lib</artifactId>
+  <version>0.1</version>
+</dependency>
 ```
 
+The latest SNAPSHOT can by used by this dependency:
+```xml
+<dependency>
+  <groupId>de.sjwimmer.ta4j-charting</groupId>
+  <artifactId>lib</artifactId>
+  <version>0.2-SNAPSHOT</version>
+</dependency>
+
+```
 ## How to build
 The example application and library can be build by executing:
 ```shell
@@ -101,3 +101,23 @@ You can also use a dark theme:
 TacChartBuilder.of(barSeries, Theme.DARK).buildAndShow();
 ```
 ![Example picture](repo/example4_dark.png)
+
+## Project structure
+This project is a simple maven project with a parent pom and two modules for the ta4j-charting library and the example project
+```text
+└───ta4j-charting-parent
+    ├───pom.xml
+    ├───README.md
+    └───lib
+    │    ├───pom.xml
+    │    └───src
+    │         ├───main
+    │         └───test
+    │    
+    │
+    └───example
+         ├───pom.xml
+         └───src
+             ├───main
+             └───resources
+```
