@@ -43,22 +43,4 @@ jobs:
            export GPG_TTY=$(tty)
            git config user.name "${{ github.event.head_commit.committer.name }}"
            git config user.email "${{ github.event.head_commit.committer.email }}"
-           mvn -B -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true --file pom.xml release:prepare release:perform
-
-      # Create a release
-
-      #- name: Run JReleaser
-      #  uses: jreleaser/release-action@v2
-      #  env:
-      #    JRELEASER_GITHUB_TOKEN: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
-
-      # Persist logs
-
-     # - name: JReleaser release output
-     #   if: always()
-     #   uses: actions/upload-artifact@v3
-      #  with:
-      #    name: jreleaser-release
-      #    path: |
-     #       out/jreleaser/trace.log
-      #      out/jreleaser/output.properties
+           mvn -B -Prelease --file pom.xml release:prepare release:perform
