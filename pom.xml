@@ -1,11 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.sjwimmer.ta4j-charting</groupId>
 	<artifactId>ta4j-charting-parent</artifactId>
 	<packaging>pom</packaging>
-	<version>0.1-SNAPSHOT</version>
+	<version>0.1</version>
 	<name>ta4j-charting-parent</name>
 	<description>Simple charting application for the ta4j library</description>
 	<url>https://github.com/team172011/ta4jCharting</url>
@@ -38,7 +36,7 @@
 		<connection>scm:git:https://github.com/team172011/ta4jCharting.git</connection>
 		<developerConnection>scm:git:https://github.com/team172011/ta4jCharting.git</developerConnection>
 		<url>https://github.com/team172011/ta4jCharting</url>
-		<tag>0.1</tag>
+		<tag>ta4j-charting-parent-0.1</tag>
 	</scm>
 	<modules>
 		<module>lib</module>
