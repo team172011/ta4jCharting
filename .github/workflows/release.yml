@@ -27,10 +27,10 @@ jobs:
           java-version: 11
           distribution: 'zulu'
           server-id: sonatype-nexus-staging
-          server-username: ${{ secrets.MAVEN_USER }}
-          server-password: ${{ secrets.MAVEN_PASSWORD }}
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_CENTRAL_TOKEN
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
-          gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
       # Post JARs to Maven Central
 
