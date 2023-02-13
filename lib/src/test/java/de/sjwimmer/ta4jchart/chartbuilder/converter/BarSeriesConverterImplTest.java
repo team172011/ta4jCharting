@@ -13,7 +13,7 @@ public class BarSeriesConverterImplTest {
 
     @Test
     public void testCreateConverter(){
-        final var barSeriesConverter = new BarSeriesConverterImpl();
+        final BarSeriesConverter barSeriesConverter = new BarSeriesConverterImpl();
         final double[] prices = new double[]{20, 21, 23, 24, 25, 26};
         final String name = "test";
         final BaseBarSeries barSeries = new BaseBarSeriesBuilder().withBars(BarSeriesHelper.createBars(prices)).withName(name).build();
@@ -27,7 +27,7 @@ public class BarSeriesConverterImplTest {
 
     @Test
     public void testCreateConverterWithName(){
-        final var barSeriesConverter = new BarSeriesConverterImpl();
+        final BarSeriesConverter barSeriesConverter = new BarSeriesConverterImpl();
         final double[] prices = new double[]{20, 21, 23, 24, 25, 26};
         final String name = "test";
         final String otherName = "otherName";
