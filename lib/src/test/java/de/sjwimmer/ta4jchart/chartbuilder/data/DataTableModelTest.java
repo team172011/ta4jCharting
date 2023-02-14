@@ -20,7 +20,7 @@ class DataTableModelTest {
         assertEquals(1, dataTableModel.getColumnCount());
         assertEquals(Object.class, dataTableModel.getColumnClass(0));
 
-        for(var i = 0; i < columnValues.size(); i++){
+        for(int i = 0; i < columnValues.size(); i++){
             assertEquals(columnValues.get(i), dataTableModel.getValueAt(i,0));
         }
     }

@@ -17,7 +17,7 @@ public class BarSeriesHelper {
      */
     public static List<Bar> createBars(final double... closes){
         final List<Bar> bars = new ArrayList<>(closes.length);
-        for(var i = 0; i < closes.length; i ++){
+        for(int i = 0; i < closes.length; i ++){
             bars.add(new BaseBar(Duration.ofDays(1), ZonedDateTime.now().minusDays((closes.length - i)), closes[i], closes[i] + (double) i, Math.max(0, closes[i] - i), closes[i], closes[i] * (double) i));
         }
         return bars;
