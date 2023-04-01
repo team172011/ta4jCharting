@@ -32,7 +32,6 @@ public class IndicatorToBarDataConverterImpl implements IndicatorToBarDataConver
 				}
 			}
 		}
-
 		return new TacBarDataset(volumeSeries, minTimeDiff);
 	}
 }

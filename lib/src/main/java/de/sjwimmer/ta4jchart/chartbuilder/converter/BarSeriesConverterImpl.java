@@ -12,6 +12,7 @@ public class BarSeriesConverterImpl implements BarSeriesConverter {
 	public DefaultHighLowDataset convert(BarSeries barSeries) {
 		return convert(barSeries, barSeries.getName());
 	}
+
 	@Override
 	public DefaultHighLowDataset convert(BarSeries barSeries, String name) {
 		if(barSeries.getBarCount() < 1){
@@ -39,7 +40,6 @@ public class BarSeriesConverterImpl implements BarSeriesConverter {
 			volumes[i] = currentBar.getVolume().doubleValue();
 
 		}
-
 		return new DefaultHighLowDataset(name, dates, highs, lows, opens, closes, volumes);
 	}
 }

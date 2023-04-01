@@ -25,7 +25,7 @@ public class TacDataTableModel extends AbstractTableModel{
 
 	public void addEntries(TacBarDataset barDataset) {
 		final List<Object> values = new ArrayList<>();
-		XYSeries series = barDataset.getSeries(0);
+		final XYSeries series = barDataset.getSeries(0);
 		for(int i = 0; i < series.getItemCount(); i++) {
 			values.add(String.format("%.3f", series.getX(i).doubleValue()));
 		}
@@ -79,7 +79,7 @@ public class TacDataTableModel extends AbstractTableModel{
 		} else if(columnIndex == 1) {
 			return closes.get(rowIndex);
 		}
-		String columnName = getColumnName(columnIndex);
+		final String columnName = getColumnName(columnIndex);
 		return data.get(columnName).get(rowIndex);
 	}
 

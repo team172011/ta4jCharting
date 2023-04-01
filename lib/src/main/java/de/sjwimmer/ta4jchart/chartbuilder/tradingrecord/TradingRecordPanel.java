@@ -9,9 +9,10 @@ import java.awt.*;
 public class TradingRecordPanel extends JPanel {
 
     private TacTradingRecordTradeTable tacTradingRecordTradeTable;
-
+    private final TradingRecord tradingRecord;
     public TradingRecordPanel(TradingRecord tradingRecord) {
         super();
+        this.tradingRecord = tradingRecord;
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         setBackground(UIManager.getColor("Button.background"));
         add(createPositionsView(tradingRecord));
@@ -37,9 +38,5 @@ public class TradingRecordPanel extends JPanel {
             tacTradingRecordPositionTable.setRowSelectionInterval(0,0);
         }
         return new JScrollPane(tacTradingRecordPositionTable);
-    }
-
-    public TacTradingRecordTradeTable getTacTradingRecordTradeTable() {
-        return tacTradingRecordTradeTable;
     }
 }

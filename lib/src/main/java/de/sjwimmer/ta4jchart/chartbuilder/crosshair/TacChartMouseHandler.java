@@ -27,14 +27,11 @@ public class TacChartMouseHandler implements ChartMouseListener, Overlay {
 
     private final ChartPanel chartPanel;
     private final CombinedDomainXYPlot combinedDomainXYPlot;
-
     private double x = Double.NaN;
     private double y = Double.NaN;
-
     private double xx = Double.NaN;
     private double yy = Double.NaN;
     private boolean sticky = true;
-
     long[] ohlcXValues;
 
     public TacChartMouseHandler(ChartPanel chartPanel) {
@@ -62,7 +59,6 @@ public class TacChartMouseHandler implements ChartMouseListener, Overlay {
 
     @Override
     public void chartMouseClicked(ChartMouseEvent event) {
-
     }
 
     @Override
@@ -143,10 +139,6 @@ public class TacChartMouseHandler implements ChartMouseListener, Overlay {
     @Override
     public void removeChangeListener(OverlayChangeListener listener) {
 
-    }
-
-    public boolean isSticky() {
-        return sticky;
     }
 
     public void setSticky(boolean sticky) {

@@ -64,15 +64,8 @@ public class TacTradingRecordPositionTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        Position currentPosition = tradingRecord.getPositions().get(rowIndex);
+        final Position currentPosition = tradingRecord.getPositions().get(rowIndex);
         return columnFunctions.getOrDefault(columnIndex, pIn -> "Position " + rowIndex ).apply(currentPosition);
     }
 
-    public TradingRecord getTradingRecord() {
-        return tradingRecord;
-    }
-
-    public void setColumFunction(int column, Function<Position, Object> function) {
-        columnFunctions.put(column, function);
-    }
 }

@@ -1,5 +1,8 @@
 package de.sjwimmer.ta4jchart.chartbuilder.toolbar;
 
+import de.sjwimmer.ta4jchart.chartbuilder.tradingrecord.TradingRecordPanel;
+import org.ta4j.core.TradingRecord;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -10,11 +13,11 @@ public class TacShowTradingRecordButton extends JToggleButton implements ActionL
     private final JPanel mainPanel;
     private final JPanel table;
 
-    public TacShowTradingRecordButton(JPanel tradingRecordPanel, JPanel mainPanel) {
-        super("Show Trading Record");
+    public TacShowTradingRecordButton(TradingRecord tradingRecord, JPanel mainPanel) {
+        super("Trading Record Table");
         this.mainPanel = mainPanel;
-        this.table = tradingRecordPanel;
-        setToolTipText("Shows or hides tables that show table record information like positions or trades");
+        this.table = new TradingRecordPanel(tradingRecord);
+        setToolTipText("Shows or hides tables with record information about positions and trades");
         addActionListener(this);
     }
 

@@ -11,10 +11,10 @@ public class TacShowDataButton extends JToggleButton implements ActionListener {
     private final JPanel mainPanel;
 
     public TacShowDataButton(JPanel dataPanel, JPanel mainPanel) {
-        super("Show Data");
+        super("Data Table");
         this.dataPanel = dataPanel;
         this.mainPanel = mainPanel;
-        setToolTipText("Shows or hides the data table showing a table for prices and indicator values");
+        setToolTipText("Shows or hides the data table with prices and indicator values");
         addActionListener(this);
     }
 
