@@ -64,12 +64,12 @@ public class TacDataTableModel extends AbstractTableModel{
 		} else if(col == 1) {
 			return "Close";
 		}
-        return data.keySet().toArray()[col].toString();
+        return data.keySet().toArray()[col - 2].toString();
     }
     
 	@Override
 	public int getColumnCount() {
-		return data.keySet().size();
+		return data.keySet().size() + 2;
 	}
 	
 	@Override

@@ -42,8 +42,13 @@ public class TacShowBuySellSignals extends JToggleButton implements ActionListen
         this.chart = chart;
         this.barSeries = barSeries;
         this.tradingRecord = tradingRecord;
-        addBuySellSignals(tradingRecord, barSeries, chart);
-        setSelected(true);
+        if (tradingRecord == null) {
+            this.setEnabled(false);
+        } else {
+            addBuySellSignals(tradingRecord, barSeries, chart);
+            setSelected(true);
+        }
+
     }
 
     @Override

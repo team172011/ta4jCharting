@@ -16,7 +16,12 @@ public class TacShowTradingRecordButton extends JToggleButton implements ActionL
     public TacShowTradingRecordButton(TradingRecord tradingRecord, JPanel mainPanel) {
         super("Trading Record Table");
         this.mainPanel = mainPanel;
-        this.table = new TradingRecordPanel(tradingRecord);
+        if (tradingRecord == null) {
+            this.setEnabled(false);
+            this.table = new JPanel(new BorderLayout());
+        } else {
+            this.table = new TradingRecordPanel(tradingRecord);
+        }
         setToolTipText("Shows or hides tables with record information about positions and trades");
         addActionListener(this);
     }
